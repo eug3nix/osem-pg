@@ -57,3 +57,8 @@ OSEM_SMTP_DOMAIN=""
 
 # Enable the usage of the devise ichain plugin
 OSEM_ICHAIN_ENABLED=false
+
+# Schedule grid parameters, cell size in minutes
+OSEM_SCHEDULE_CELL_SIZE=10
+OSEM_SCHEDULE_START_HOUR = 9
+OSEM_SCHEDULE_END_HOUR = 19
