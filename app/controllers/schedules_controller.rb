@@ -13,6 +13,8 @@ class SchedulesController < ApplicationController
 
     @events_xml = schedules.map(&:event).group_by{ |event| event.time.to_date } if schedules
     @dates = @conference.start_date..@conference.end_date
+    @tracks = @conference.program.tracks
+
     @step_minutes = EventType::LENGTH_STEP.minutes
     @conf_start = @conference.start_hour
     @conf_period = @conference.end_hour - @conf_start
@@ -27,6 +29,7 @@ class SchedulesController < ApplicationController
 
   def events
     @dates = @conference.start_date..@conference.end_date
+    @tracks = @conference.program.tracks
 
     @events_schedules = @program.selected_event_schedules
     @events_schedules = [] unless @events_schedules

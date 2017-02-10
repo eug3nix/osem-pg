@@ -58,6 +58,10 @@
     cursor: pointer;
 }
 
+.transparent {
+  opacity: 0.1;
+}
+
 .unscheduled-events .schedule-event-delete-button {
   display: none;
 }
@@ -155,8 +159,8 @@ a.unstyled-link {
  }
 
 .program-dropdown, .schedule-dropdown{
-  margin-left: 20%;
-  margin-right: 20%;
+  // margin-left: 20%;
+  // margin-right: 20%;
   margin-top: 40px;
   margin-bottom: 20px;
 }
@@ -266,8 +270,8 @@ td.no-padding{
  }
 
 .program-dropdown{
-  margin-left: 20%;
-  margin-right: 20%;
+  // margin-left: 20%;
+  // margin-right: 20%;
   margin-top: 40px;
 }
 

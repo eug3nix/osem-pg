@@ -5,15 +5,30 @@
     %h1.text-center
       Schedule for
       = @conference.title
-    .dropdown.schedule-dropdown
-      %button{ type: "button", class: "btn btn-default dropdown-toggle", 'data-toggle' => "dropdown" }
-        = @day
-        %span.caret
-      %ul.dropdown-menu
-        - @dates.each do |date|
-          %li.li-dropdown-schedule{ class: "#{ 'active' if @day == date }" }
-            = link_to date, "#" + "#{date}", "data-toggle" => "tab", "class" => "date-tab"
+    .row
+      .col-md-6
+        .dropdown.schedule-dropdown.dates-dropdown
+          %button{ type: "button", class: "btn btn-default dropdown-toggle dates-dropdown-button", 'data-toggle' => "dropdown" }
+            %span.button-label
+              = @day
+            %span.caret
+          %ul.dropdown-menu
+            - @dates.each do |date|
+              %li.li-dropdown-schedule{ class: "#{ 'active' if @day == date }" }
+                = link_to date, "#" + "#{date}", "data-toggle" => "tab", "class" => "date-tab"
 
+      .col-md-6
+        .dropdown.schedule-dropdown.tracks-dropdown
+          %button{ type: "button", class: "btn btn-default dropdown-toggle tracks-dropdown-button", 'data-toggle' => "dropdown" }
+            %span.button-label
+              All Tracks
+            %span.caret
+          %ul.dropdown-menu
+            %li.li-dropdown-schedule-track.active
+              = link_to 'All Tracks', "#", "data-filter" => "", "class" => "track-filter-link"
+            - @tracks.each do |track|
+              %li.li-dropdown-schedule-track
+                = link_to track.name, "#", "data-filter" => "#{track.id}", "class" => "track-filter-link"
     .tab-content
       .row.legend
         - @conference.program.tracks.each do |track|
@@ -34,11 +49,26 @@
             = render partial: 'carousel', locals: { date: date, hrs_per_slide: 3 }
 
 :javascript
+  function filter_events(trackid) {
+    if(trackid) {
+      $("td.event").addClass('transparent');
+      var event_selector = "td.event[data-trackid='" + trackid + "']"
+      $(event_selector).removeClass('transparent')
+    } else {
+      $("td.event").removeClass('transparent');
+    }
+  }
   // change of active tab and the button title when a date is clicked
   $(function() {
     $('.date-tab').on('click', function(e) {
       $('.li-dropdown-schedule').removeClass('active');
-      $('.schedule-dropdown').find('button').text($(this).text());
+      $('.dates-dropdown').find('.button-label').text($(this).text());
+    });
+
+    $('.track-filter-link').on('click', function(e) {
+      $('.li-dropdown-schedule-track').removeClass('active');
+      $('.tracks-dropdown').find('.button-label').text($(this).text());
+      filter_events($(this).attr('data-filter'))
     });
   });
 
@@ -81,7 +111,7 @@
       var hash = window.location.hash;
       if(hash && !(hash === '#schedule')){
         hash && $('ul a[href="' + hash + '"]').tab('show');
-        $('button.dropdown-toggle').text(hash.substr(1));
+        $('button.dates-dropdown-button').text(hash.substr(1));
       }
     }
   });

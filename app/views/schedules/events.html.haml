@@ -5,41 +5,60 @@
   %h1.text-center
     Program for
     = @conference.title
-  .dropdown.program-dropdown
-    %button{ type: "button", class: "btn btn-default dropdown-toggle", 'data-toggle' => "dropdown" }
-      Dates
-      %span.caret
-    %ul.dropdown-menu
-      - @dates.each do |date|
-        %li.li-dropdown-program
-          = link_to date, "##{date}", class: "program-selector#{ ' no-events-day' unless @conference.program.any_event_for_this_date?(date) }"
-      - if @unscheduled_events.any?
-        %li.li-dropdown-program
-          = link_to('Unscheduled', "#unscheduled", class: 'program-selector')
+  .row
+    .col-md-6
+      .dropdown.program-dropdown
+        %button{ type: "button", class: "btn btn-default dropdown-toggle", 'data-toggle' => "dropdown" }
+          %span.button-label
+            Dates
+          %span.caret
+        %ul.dropdown-menu
+          - @dates.each do |date|
+            %li.li-dropdown-program
+              = link_to date, "##{date}", class: "program-selector#{ ' no-events-day' unless @conference.program.any_event_for_this_date?(date) }"
+          - if @unscheduled_events.any?
+            %li.li-dropdown-program
+              = link_to('Unscheduled', "#unscheduled", class: 'program-selector')
+
+    .col-md-6
+      .dropdown.schedule-dropdown.tracks-dropdown
+        %button{ type: "button", class: "btn btn-default dropdown-toggle tracks-dropdown-button", 'data-toggle' => "dropdown" }
+          %span.button-label
+            All Tracks
+          %span.caret
+        %ul.dropdown-menu
+          %li.li-dropdown-schedule-track.active
+            = link_to 'All Tracks', "#", "data-filter" => "", "class" => "track-filter-link"
+          - @tracks.each do |track|
+            %li.li-dropdown-schedule-track
+              = link_to track.name, "#", "data-filter" => "#{track.id}", "class" => "track-filter-link"
+
 
   .row
 
     / scheduled events
     - date = nil
     - time = nil
-    - @events_schedules.each do |event_schedule|
-      - unless event_schedule.start_time.strftime('%Y-%m-%d').eql?(date)
+    - @events_schedules_groups = @events_schedules.group_by { |el| el.start_time }
+    - @events_schedules_groups.each do |esg|
+      - unless esg.first.strftime('%Y-%m-%d').eql?(date)
         .col-xs-12.col-md-12
           .date-content
-            %span{ class: 'date-title', id: "#{ event_schedule.start_time.strftime('%Y-%m-%d') }" }
-              = date = event_schedule.start_time.strftime('%Y-%m-%d')
+            %span{ class: 'date-title', id: "#{ esg.first.strftime('%Y-%m-%d') }" }
+              = date = esg.first.strftime('%Y-%m-%d')
             %a{ title: "Go up", class: "pull-right", href: "#program" }
               %i{ class: "fa fa-angle-double-up fa-lg", 'aria-hidden' => true }
-      - unless event_schedule.start_time.strftime('%H:%M').eql?(time)
+      .row.event-group
         .col-xs-12.col-md-1
           .start-time
-            = time = event_schedule.start_time.strftime('%H:%M')
+            = esg.first.strftime('%H:%M')
         .col-xs-12.col-md-11
-          .new-time-event
-            = render partial: 'event', locals: { event: event_schedule.event, event_schedule: event_schedule }
-      - else
-        .col-xs-12.col-md-11.col-md-offset-1
-          = render partial: 'event', locals: { event: event_schedule.event, event_schedule: event_schedule }
+          .row
+            - esg.second.each do |event_schedule|
+              .col-xs-12.col-md-12{ data: { trackid: event_schedule.event.track.try(:id) } }
+                .new-time-event
+                  = render partial: 'event', locals: { event: event_schedule.event, event_schedule: event_schedule }
+
 
     / confirmed events that are not scheduled
     - if @unscheduled_events.any?
@@ -55,6 +74,28 @@
             = render partial: 'event', locals: { event: event, event_schedule: nil }
 
 :javascript
+  function filter_events(trackid) {
+    $(".event-panel").show();
+    $(".event-group").show();
+
+    if(trackid) {
+      var event_selector = ".event-panel:not([data-trackid='" + trackid + "'])"
+      var events = $(event_selector)
+      events.hide()
+
+      var empty_eventgroups = $('.event-group').filter(function(){
+        return $(this).find(".event-panel:visible").length == 0;
+      })
+      empty_eventgroups.hide()
+    }
+  }
+
+  $('.track-filter-link').on('click', function(e) {
+      $('.li-dropdown-schedule-track').removeClass('active');
+      $('.tracks-dropdown').find('.button-label').text($(this).text());
+      filter_events($(this).attr('data-filter'))
+  });
+
   $('.program-selector').on('click', function(e) {
     $('.li-dropdown-program').removeClass('active');
   });

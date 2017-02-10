@@ -2,7 +2,8 @@
 %td.event{ width: "#{ width * span }%" , |
            style: "border-style: solid; box-shadow: inset 0px -5px 0px 0px #{color}", 
            colspan: span, |
-           role: "button" }
+           role: "button", |
+           data: { trackid: event.track.try(:id) } }
   %a.unstyled-link{href: url_for(conference_program_proposal_path(@conference.short_title, event.id))}
     %div{ class: "elipsis break-words event-title", |
           style: "-webkit-line-clamp: #{ event_lines(@rooms) }; height: #{ event_height(@rooms) }px;"} |
