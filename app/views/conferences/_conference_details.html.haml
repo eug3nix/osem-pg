@@ -1,40 +1,33 @@
 .row
-  .col-md-12
-    .well
-      .row
-        .col-md-4.text-center
-          = image_tag(conference.picture_url, class: 'img-responsive') if conference.picture?
-        .col-md-6
-          %h3
-            = conference.title
-            %small
-              %b
+  .col-md-8.col-md-offset-2
+    .panel.panel-default.conference-panel{class: "#{conference_class}"}
+      .panel-heading
+        .row
+          .col-md-9
+            %h3
+              = conference.title
+            %p.leads
               = date_string(conference.start_date, conference.end_date)
-          - if conference.venue
-            %p
-              = "#{conference.venue.city}/#{conference.venue.country_name}"
-          - unless conference.description.blank?
-            %p
-              = markdown(conference.description)
-        .col-md-2
-          .btn-group-vertical
-            - if !@conference || @conference != conference
-              - if conference.splashpage && conference.splashpage.public
-                = link_to "View Conference", conference_path(conference.short_title), :class =>"btn btn-default"
-            - if conference.program and conference.program.schedule_public
-              = link_to "Schedule", conference_schedule_path(conference.short_title), :class =>"btn btn-default"
-            - if conference.registration_open?
-              - if conference.user_registered?(current_user)
-                = link_to "My Registration", conference_conference_registration_path(conference.short_title), :class =>"btn btn-default"
-              - else
-                = link_to "Register", new_conference_conference_registration_path(conference.short_title), class: "btn btn-default", disabled: conference.registration_limit_exceeded?
-                - if conference.registration_limit_exceeded?
-                  Sorry, no places left
-            - if !current_user.nil? && current_user.proposal_count(conference) > 0
-              = link_to "My Proposals", conference_program_proposals_path(conference.short_title), :class =>"btn btn-default"
-            - elsif can? :new, conference.program.events.new
-              = link_to "Submit Proposal", new_conference_program_proposal_path(conference.short_title), :class =>"btn btn-default"
-            - if current_user.nil? || !current_user.subscribed?(conference)
-              = link_to 'Subscribe', conference_subscriptions_path(conference.short_title), method: :post, class: 'btn btn-default'
-            - else
-              = link_to 'Unsubscribe', conference_subscriptions_path(conference.short_title), method: :delete, class: 'btn btn-default'
+              - if conference.venue
+                = "#{conference.venue.city}/#{conference.venue.country_name}"
+
+          .col-md-3
+            - if conference.registration_open? && !conference.user_registered?(current_user)
+              = link_to "Register", new_conference_conference_registration_path(conference.short_title), class: "btn btn-success btn-lg btn-block btn-cta pull-right", disabled: conference.registration_limit_exceeded?
+              - if conference.registration_limit_exceeded?
+                Sorry, no places left
+      .panel-body
+        .row
+          .col-md-4
+            = image_tag(conference.picture_url, class: 'img-responsive') if conference.picture?
+          .col-md-8
+            - unless conference.description.blank?
+              %p
+                = markdown(conference.description)
+        .row
+          .col-md-10.col-md-offset-2
+            .btn-group.pull-right.hidden-xs
+              = render partial: 'conference_button_bar', locals: { conference: conference }
+
+            .btn-group-vertical.visible-xs
+              = render partial: 'conference_button_bar', locals: { conference: conference }

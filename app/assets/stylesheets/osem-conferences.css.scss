@@ -1,0 +1,30 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,700,700italic,500italic,900,900italic|Roboto+Condensed:400,300,300italic,400italic,700,700italic|Roboto+Slab:400,100,300,700);
+
+.conference-panel {
+    font-family: 'Roboto', sans-serif;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.23);
+    border: none;
+    border-radius: 0px !important;
+}
+
+.conference-panel h3 {
+    font-family: 'Roboto', sans-serif;
+    margin-top: 0;
+    margin-bottom: 0px;
+}
+
+.conference-panel .panel-heading {
+    color: white;
+}
+.conference-panel .btn-cta {
+    font-size: 26px;
+}
+.conference-upcoming .panel-heading {
+    background-color: #283593;
+}
+.conference-recent .panel-heading {
+    background-color: #5c6bc0;
+}
+.conference-archive .panel-heading {
+    background-color: #757575;
+}

@@ -255,6 +255,16 @@ class Conference < ActiveRecord::Base
   end
 
   ##
+  # Checks if the conference is pending.
+  #
+  # ====Returns
+  # * +false+ -> If the conference end date is in the future.
+  # * +true+ -> If the conference end date is in the past.
+  def ended?
+    end_date < Date.today
+  end
+
+  ##
   # Returns a hash with booleans with the required conference options.
   #
   # ====Returns

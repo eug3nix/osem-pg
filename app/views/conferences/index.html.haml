@@ -1,23 +1,46 @@
 .container
+  .row.text-center.text-muted.h1
+    Conferences
   .row
     .col-md-12
       .page-header
-        %h2 Upcoming Conferences
+        %h2.muted Upcoming
   - @current.each do |conference|
-    = render partial: 'conference_details', locals: { conference: conference }
+    = render partial: 'conference_details', locals: { conference: conference, conference_class: 'conference-upcoming' }
+  - unless @current.any?
+    .row
+      .col-md-8.col-md-offset-2
+        .panel.panel-default.conference-panel
+          .panel-heading
+            .row
+              .col-md-10.text-muted
+                %h3 Nothing to show...
+          .panel-body
+            .row.text-center.h2.text-muted
+              There are no upcoming conferences for the moment
+              - if @recent.any?
+                %br
+                Perhaps you may want to check the recent conferences below
+  .row
+    .col-md-12
+      .page-header
+        %h2 Recent
+  - @recent.each do |conference|
+    = render partial: 'conference_details', locals: { conference: conference, conference_class: 'conference-recent' }
   -if @antiquated and @antiquated.any?
     .row
       .col-md-12
-        %p.text-right
+        .page-header
           %button{ type: 'button', class: 'btn btn-link btn-sm', 'data-toggle' => 'collapse', 'data-target' => '#antiquated', 'aria-expanded' => 'true', 'aria-controls' => 'antiquated'}
-            Older conferences
-            %span.notranslate
-              = "(#{@antiquated.count})"
-            %i.fa.fa-chevron-right
-            %i.fa.fa-chevron-down{ style: 'display: none' }
+            %h2
+              Archive
+              %span.notranslate
+                = "(#{@antiquated.count})"
+              %i.fa.fa-chevron-right
+              %i.fa.fa-chevron-down{ style: 'display: none' }
     #antiquated.collapse
       - @antiquated.each do |conference|
-        = render partial: 'conference_details', locals: { conference: conference}
+        = render partial: 'conference_details', locals: { conference: conference, conference_class: 'conference-archive'}
 
 -content_for :script_body do
   :javascript
