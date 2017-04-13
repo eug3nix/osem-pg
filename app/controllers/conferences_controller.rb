@@ -4,11 +4,6 @@ class ConferencesController < ApplicationController
   load_and_authorize_resource find_by: :short_title
   load_resource :program, through: :conference, singleton: true, except: [:index, :redirect_to_current]
 
-  def index_
-    @current = Conference.where('end_date >= ?', Date.current).reorder(start_date: :asc)
-    @antiquated = @conferences - @current
-  end
-
   def index
     @current = Conference.where('end_date >= ?', Date.current).reorder(start_date: :asc)
     @recent =  Conference.where('end_date >= ?', Date.current - 12.months).
