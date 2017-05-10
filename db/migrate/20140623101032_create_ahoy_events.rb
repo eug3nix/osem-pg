@@ -1,7 +1,7 @@
 class CreateAhoyEvents < ActiveRecord::Migration
   def change
     create_table :ahoy_events  do |t|
-      t.integer :visit_id
+      t.uuid :visit_id
       # user
       t.integer :user_id
       # add t.string :user_type if polymorphic

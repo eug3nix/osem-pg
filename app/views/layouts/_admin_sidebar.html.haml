@@ -119,6 +119,10 @@
         - if can? :update, @conference.tickets.build
           %li{ class: active_nav_li(admin_conference_tickets_path(@conference.short_title)) }
             = link_to 'Tickets', admin_conference_tickets_path(@conference.short_title)
+        - if can? :update, Code.new(conference_id: @conference.id)
+          %li{ class: active_nav_li(admin_conference_codes_path(@conference.short_title)) }
+            = link_to 'Promo Codes', admin_conference_codes_path(@conference.short_title)
+
 
   - if (can? :manage, @conference.targets.build) || (can? :manage, @conference.campaigns.build)
     %li

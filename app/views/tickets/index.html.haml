@@ -9,7 +9,13 @@
         %strong
           = @conference.title
         here*
+
+        - if @conference.codes.any?
+          = render 'code'
+
       =form_tag(conference_ticket_purchases_path, method: :post) do |f|
+        - if @conference.tickets.applied_code.present?
+          = hidden_field_tag 'code_id', @conference.tickets.applied_code.id
         %table.table.table-hover
           %thead
             %tr
@@ -18,7 +24,7 @@
               %th Price
               %th Total
           %tbody
-          - @conference.tickets.each do |ticket|
+          - @conference.tickets.visible_tickets.each do |ticket|
             = render partial: 'ticket', f: f, locals: {ticket: ticket}
           %tr
             %td
@@ -29,7 +35,6 @@
             %td.col-sm-1.col-md-1.text-center
               %h4
                 %strong
-                  = @conference.tickets.first.price.symbol
                   %span{id: 'total_price'}
                     0
         .pull-right

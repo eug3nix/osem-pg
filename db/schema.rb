@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170420142342) do
+ActiveRecord::Schema.define(version: 20170503235816) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,6 +68,36 @@ ActiveRecord::Schema.define(version: 20170420142342) do
     t.integer  "program_id"
   end
 
+  create_table "code_types", force: :cascade do |t|
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "code_types", ["title"], name: "index_code_types_on_title", unique: true, using: :btree
+
+  create_table "codes", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "code_type_id"
+    t.integer  "conference_id"
+    t.integer  "discount"
+    t.integer  "max_uses"
+    t.integer  "sponsor_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "codes", ["conference_id"], name: "index_codes_on_conference_id", using: :btree
+  add_index "codes", ["name"], name: "index_codes_on_name", unique: true, using: :btree
+  add_index "codes", ["sponsor_id"], name: "index_codes_on_sponsor_id", using: :btree
+
+  create_table "codes_tickets", id: false, force: :cascade do |t|
+    t.integer "code_id"
+    t.integer "ticket_id"
+  end
+
+  add_index "codes_tickets", ["code_id", "ticket_id"], name: "index_codes_tickets_on_code_id_and_ticket_id", unique: true, using: :btree
+
   create_table "comments", force: :cascade do |t|
     t.string   "title",            limit: 50, default: ""
     t.text     "body"
@@ -115,12 +145,19 @@ ActiveRecord::Schema.define(version: 20170420142342) do
     t.text     "description"
     t.integer  "registration_limit",   default: 0
     t.string   "picture"
-    t.integer  "start_hour",           default: 9
-    t.integer  "end_hour",             default: 20
+    t.integer  "start_hour",         default: 9
+    t.integer  "end_hour",           default: 20
     t.string   "background_file_name"
     t.boolean  "require_itinerary"
     t.boolean  "use_pg_flow",        default: true
   end
+
+  create_table "conferences_codes", id: false, force: :cascade do |t|
+    t.integer "conference_id"
+    t.integer "code_id"
+  end
+
+  add_index "conferences_codes", ["conference_id", "code_id"], name: "index_conferences_codes_on_conference_id_and_code_id", unique: true, using: :btree
 
   create_table "conferences_questions", id: false, force: :cascade do |t|
     t.integer "conference_id"
@@ -496,7 +533,10 @@ ActiveRecord::Schema.define(version: 20170420142342) do
     t.integer  "quantity",      default: 1
     t.integer  "user_id"
     t.integer  "payment_id"
+    t.integer  "code_id"
   end
+
+  add_index "ticket_purchases", ["conference_id", "code_id"], name: "index_ticket_purchases_on_conference_id_and_code_id", using: :btree
 
   create_table "tickets", force: :cascade do |t|
     t.integer "conference_id"
@@ -504,6 +544,7 @@ ActiveRecord::Schema.define(version: 20170420142342) do
     t.text    "description"
     t.integer "price_cents",    default: 0,     null: false
     t.string  "price_currency", default: "USD", null: false
+    t.boolean "hidden",         default: false
   end
 
   create_table "tracks", force: :cascade do |t|
@@ -652,5 +693,13 @@ ActiveRecord::Schema.define(version: 20170420142342) do
     t.datetime "updated_at"
   end
 
+  add_foreign_key "codes", "code_types"
+  add_foreign_key "codes", "conferences"
+  add_foreign_key "codes", "sponsors"
+  add_foreign_key "codes_tickets", "codes"
+  add_foreign_key "codes_tickets", "tickets"
+  add_foreign_key "conferences_codes", "codes"
+  add_foreign_key "conferences_codes", "conferences"
   add_foreign_key "sponsorship_infos", "conferences"
+  add_foreign_key "ticket_purchases", "codes"
 end

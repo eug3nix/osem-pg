@@ -3,7 +3,7 @@
     .col-md-12
       .page-header
         %h1
-          = image_tag(@user.avatar_url(version: 'medium'), title: "Yo #{@user.name}!", :alt => '')
+          = image_tag(@user.avatar_url(version: 'medium'), title: "Yo #{@user.first_name}!", :alt => '')
           = @user.first_name
           = @user.last_name
           %small

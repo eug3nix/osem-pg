@@ -47,6 +47,7 @@
 //= require osem-commercials
 //= require unobtrusive_flash
 //= require unobtrusive_flash_bootstrap
+//= require accounting.min
 //= require selectize
 
 $(document).ready(function() {

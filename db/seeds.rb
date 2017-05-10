@@ -32,3 +32,6 @@ questions_yes_no.each do |i|
   q.answers = [answer_yes, answer_no]
   q.save!
 end
+
+CodeType.find_or_create_by!(name: 'Discount')
+CodeType.find_or_create_by!(name: 'Access')

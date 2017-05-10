@@ -3,6 +3,10 @@ class Ticket < ActiveRecord::Base
   has_many :ticket_purchases, dependent: :destroy
   has_many :buyers, -> { distinct }, through: :ticket_purchases, source: :user
 
+  has_and_belongs_to_many :codes, :join_table => :codes_tickets
+
+  cattr_accessor :applied_code
+
   has_paper_trail meta: { conference_id: :conference_id }
 
   monetize :price_cents, with_model_currency: :price_currency
@@ -13,7 +17,9 @@ class Ticket < ActiveRecord::Base
 
   validates :price_cents, :price_currency, :title, presence: true
 
-  validates_numericality_of :price_cents, greater_than: 0
+  validates_numericality_of :price_cents, greater_than_or_equal_to: 0
+
+  scope :visible, -> { where(hidden: false) }
 
   def bought?(user)
     buyers.include?(user)
@@ -32,7 +38,11 @@ class Ticket < ActiveRecord::Base
   end
 
   def total_price(user, paid: false)
-    quantity_bought_by(user, paid: paid) * price
+    quantity_bought_by(user, paid: paid) * adjusted_price
+  end
+
+  def self.total_quantity(conference, user, paid: false)
+    TicketPurchase.where(conference_id: conference.id, user_id: user.id, paid: paid).sum(:quantity)
   end
 
   def self.total_price(conference, user, paid: false)
@@ -59,6 +69,31 @@ class Ticket < ActiveRecord::Base
 
   def tickets_turnover
     tickets_sold * price
+  end
+
+  def adjusted_price
+    if applied_code.present?
+      if Ticket.where(id: id).joins(:codes).where("codes.id = ?", applied_code.id).count > 0
+        adj_price = price - (price * ((applied_code.discount.to_f) / 100.0))
+      else
+        adj_price = price
+      end
+    else
+      adj_price = price
+    end
+    adj_price
+  end
+
+  def self.visible_tickets
+    if applied_code.present?
+      if applied_code.code_type.title == 'Access'
+        where(hidden: true).joins(:codes).where("codes.id = ?", applied_code.id) | where(hidden: false)
+      else
+        where(hidden: false)
+      end
+    else
+      where(hidden: false)
+    end
   end
 
   private

@@ -4,12 +4,7 @@ class SplitTicketPriceInPriceAndCurrency < ActiveRecord::Migration
   end
 
   def change
-    # use add_monetize for PostgreSQL instead of add_money
-    if ActiveRecord::Base.connection.adapter_name  == 'PostgreSQL'
-      add_monetize :tickets, :price
-    else
-      add_money :tickets, :price
-    end
+    add_money :tickets, :price
 
     TempTicket.all.each do |ticket|
       # Replace currency symbol with ISO Code

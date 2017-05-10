@@ -103,8 +103,12 @@ class ConferenceRegistrationsController < ApplicationController
   def set_registration
     @registration = Registration.find_by(conference: @conference, user: current_user)
     unless @registration
-      redirect_to new_conference_conference_registration_path(@conference.short_title),
-                  error: "Can't find a registration for #{@conference.title} for you. Please register."
+      if @conference.tickets.any?
+        create
+      else
+        redirect_to new_conference_conference_registration_path(@conference.short_title),
+                    error: "Can't find a registration for #{@conference.title} for you. Please register."
+      end
     end
   end
 

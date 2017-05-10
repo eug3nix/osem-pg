@@ -4,13 +4,16 @@ function update_price($this){
     // Calculate price for row
     var value = $this.val();
     var price = $('#price_' + id).text();
-    $('#total_row_' + id).text(value * price);
+    var row_total = accounting.formatMoney(value * price);
+    $('#total_row_' + id).text(row_total);
 
     // Calculate total price
     var total = 0;
     $('.total_row').each(function( index ) {
-        total += parseInt($(this).text());
+        var row_val = accounting.unformat($(this).text());
+        total += parseFloat(row_val);
     });
+    total = accounting.formatMoney(total);
     $('#total_price').text(total);
 }
 

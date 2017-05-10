@@ -3,6 +3,8 @@ class TicketPurchase < ActiveRecord::Base
   belongs_to :user
   belongs_to :conference
 
+  belongs_to :code
+
   validates :ticket_id, :user_id, :conference_id, :quantity, presence: true
 
   validates_numericality_of :quantity, greater_than: 0
@@ -10,6 +12,7 @@ class TicketPurchase < ActiveRecord::Base
   delegate :title, to: :ticket
   delegate :description, to: :ticket
   delegate :price, to: :ticket
+  delegate :adjusted_price, to: :ticket
   delegate :price_cents, to: :ticket
   delegate :price_currency, to: :ticket
 
@@ -18,7 +21,7 @@ class TicketPurchase < ActiveRecord::Base
   scope :by_conference, -> (conference) { where(conference_id: conference.id) }
   scope :by_user, -> (user) { where(user_id: user.id) }
 
-  def self.purchase(conference, user, purchases)
+  def self.purchase(conference, user, purchases, code_id)
     errors = []
     ActiveRecord::Base.transaction do
       conference.tickets.each do |ticket|
@@ -27,7 +30,7 @@ class TicketPurchase < ActiveRecord::Base
         if ticket.bought?(user) && ticket.unpaid?(user)
           purchase = update_quantity(conference, quantity, ticket, user)
         else
-          purchase = purchase_ticket(conference, quantity, ticket, user)
+          purchase = purchase_ticket(conference, quantity, ticket, user, code_id)
         end
 
         if purchase && !purchase.save
@@ -38,11 +41,13 @@ class TicketPurchase < ActiveRecord::Base
     errors.join('. ')
   end
 
-  def self.purchase_ticket(conference, quantity, ticket, user)
+  def self.purchase_ticket(conference, quantity, ticket, user, code_id)
+
     purchase = new(ticket_id: ticket.id,
                    conference_id: conference.id,
                    user_id: user.id,
-                   quantity: quantity) if quantity > 0
+                   quantity: quantity,
+                   code_id: code_id) if quantity > 0
     purchase
   end
 
@@ -54,5 +59,10 @@ class TicketPurchase < ActiveRecord::Base
 
     purchase.quantity = quantity if quantity > 0
     purchase
+  end
+
+  def self.get_code_usage(conference, code)
+    usage = TicketPurchase.where(conference_id: conference.id, code_id: code.id).sum(:quantity)
+    usage
   end
 end

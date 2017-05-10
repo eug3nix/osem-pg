@@ -21,16 +21,22 @@ class Payment < ActiveRecord::Base
   end
 
   def purchase
-    gateway_response = Stripe::Charge.create source: stripe_customer_token,
-                                             receipt_email: stripe_customer_email,
-                                             description: "ticket purchases(#{user.username})",
-                                             amount: amount_to_pay,
-                                             currency: conference.tickets.first.price_currency
+    if amount_to_pay > 0
+      gateway_response = Stripe::Charge.create source: stripe_customer_token,
+                                               receipt_email: stripe_customer_email,
+                                               description: "ticket purchases(#{user.username})",
+                                               amount: amount_to_pay,
+                                               currency: conference.tickets.first.price_currency
 
-    self.amount = gateway_response[:amount]
-    self.last4 = gateway_response[:source][:last4]
-    self.authorization_code = gateway_response[:id]
-    self.status = 'success'
+      self.amount = gateway_response[:amount]
+      self.last4 = gateway_response[:source][:last4]
+      self.authorization_code = gateway_response[:id]
+      self.status = 'success'
+    else
+      self.amount = 0
+      self.status = 'success'
+    end
+
     true
 
   rescue Stripe::StripeError => error

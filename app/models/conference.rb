@@ -12,6 +12,7 @@ class Conference < ActiveRecord::Base
   has_paper_trail ignore: [:updated_at, :guid, :revision, :events_per_week], meta: { conference_id: :id }
 
   has_and_belongs_to_many :questions
+  has_and_belongs_to_many :codes, :join_table => :conferences_codes
 
   has_one :splashpage, dependent: :destroy
   has_one :contact, dependent: :destroy
@@ -44,6 +45,7 @@ class Conference < ActiveRecord::Base
   accepts_nested_attributes_for :sponsors, allow_destroy: true
   accepts_nested_attributes_for :email_settings
   accepts_nested_attributes_for :questions, allow_destroy: true
+  accepts_nested_attributes_for :codes, allow_destroy: true
   accepts_nested_attributes_for :vdays, allow_destroy: true
   accepts_nested_attributes_for :vpositions, allow_destroy: true
   accepts_nested_attributes_for :targets, allow_destroy: true
@@ -641,6 +643,18 @@ class Conference < ActiveRecord::Base
     (start_hour..(end_hour-1)).cover?(current_hour) ? current_hour - start_hour : 0
   end
 
+  ##
+  # Checks if the code is valid for the conference
+  #
+  # ====Args
+  # * +applied_code+ -> The code we check for
+  # ====Returns
+  # * +code+ -> the code
+  def get_valid_code(applied_code)
+    code = codes.where(name: applied_code).first
+    code
+  end
+
   private
 
   # Returns a different html colour for every i and consecutive colors are
@@ -1082,4 +1096,5 @@ class Conference < ActiveRecord::Base
 
     result
   end
+
 end

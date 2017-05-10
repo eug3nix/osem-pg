@@ -155,6 +155,10 @@ class Ability
     can :manage, Question do |question|
       !(question.conferences.pluck(:id) & conf_ids_for_organizer).empty?
     end
+    can :manage, Code, conference_id: conf_ids_for_organizer
+    can :manage, Code do |code|
+      !(code.conferences.pluck(:id) & conf_ids_for_organizer).empty?
+    end
     can :manage, Vposition, conference_id: conf_ids_for_organizer
     can :manage, Vday, conference_id: conf_ids_for_organizer
     can :manage, Program, conference_id: conf_ids_for_organizer
