@@ -7,7 +7,7 @@ class Venue < ActiveRecord::Base
   has_paper_trail ignore: [:updated_at, :guid], meta: { conference_id: :conference_id }
 
   accepts_nested_attributes_for :commercial, allow_destroy: true
-  validates :name, :street, :city, :country, presence: true
+  validates :name, :street, :city, :state, :country, presence: true
 
   mount_uploader :picture, PictureUploader, mount_on: :photo_file_name
 

@@ -28,7 +28,7 @@
         %address
           = @conference.venue.street
           %br
-          = "#{@conference.venue.postalcode}, #{@conference.venue.city}"
+          = "#{@conference.venue.city}, #{@conference.venue.state} #{@conference.venue.postalcode}"
           %br
           = @conference.venue.country_name
           - if @conference.venue.website

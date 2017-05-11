@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170503235816) do
+ActiveRecord::Schema.define(version: 20170511184814) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -145,11 +145,11 @@ ActiveRecord::Schema.define(version: 20170503235816) do
     t.text     "description"
     t.integer  "registration_limit",   default: 0
     t.string   "picture"
-    t.integer  "start_hour",         default: 9
-    t.integer  "end_hour",           default: 20
-    t.string   "background_file_name"
+    t.integer  "start_hour",           default: 9
+    t.integer  "end_hour",             default: 20
     t.boolean  "require_itinerary"
-    t.boolean  "use_pg_flow",        default: true
+    t.boolean  "use_pg_flow",          default: true
+    t.string   "background_file_name"
   end
 
   create_table "conferences_codes", id: false, force: :cascade do |t|
@@ -637,6 +637,7 @@ ActiveRecord::Schema.define(version: 20170503235816) do
     t.string   "longitude"
     t.integer  "conference_id"
     t.string   "picture"
+    t.string   "state"
   end
 
   create_table "versions", force: :cascade do |t|

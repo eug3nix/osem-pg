@@ -1,5 +1,5 @@
 #map{style: "height: 500px;" }
-- popup = "<h3>#{@conference.venue.name}</h3><br>#{@conference.venue.street}<br>#{@conference.venue.city}<br>#{@conference.venue.country_name}"
+- popup = "<h3>#{@conference.venue.name}</h3><br>#{@conference.venue.street}<br>#{@conference.venue.city}, #{@conference.venue.state}<br>#{@conference.venue.country_name}"
 - content_for(:script_body) do
   :javascript
     // create a map in the "map" div, set the view to a given place and zoom
