@@ -179,6 +179,10 @@ class ProposalsController < ApplicationController
 
   def registrations; end
 
+  def authenticate_user!
+    redirect_to( new_user_registration_path) unless user_signed_in?
+  end
+
   private
 
   def event_params
