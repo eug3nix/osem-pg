@@ -50,7 +50,7 @@ var Schedule = {
     var type = 'POST';
     var params = { event_schedule: {
       room_id: new_parent.attr("room_id"),
-      start_time: (new_parent.attr("date") + ' ' + new_parent.attr("hour"))
+      start_time: new_parent.attr('data-slot-datetime')
     }};
     if(event_schedule_id != null){
       type = 'PUT';

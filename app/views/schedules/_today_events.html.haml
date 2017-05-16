@@ -2,11 +2,8 @@
   What's happening now
 
 - @today_event_schedules.each do |event_schedule|
-  - event_start_with_offset = @current_time.change(hour: event_schedule.start_time.hour, min: event_schedule.start_time.min)
-  - event_end_with_offset = @current_time.change(hour: event_schedule.end_time.hour, min: event_schedule.end_time.min)
-  - minutes_till_start = (event_start_with_offset - @current_time) / 60
-  - if minutes_till_start < 120
-    - if @current_time < event_end_with_offset
-      .col-md-6
-        = render partial: 'event_mini', locals: { event: event_schedule.event, event_schedule: event_schedule, current_time: @current_time }
+  - event_end = event_schedule.end_time.in_time_zone(@conference.timezone)
+  - if @current_time < event_end
+    .col-md-6
+      = render partial: 'event_mini', locals: { event: event_schedule.event, event_schedule: event_schedule, current_time: @current_time }
 

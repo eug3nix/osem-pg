@@ -1,26 +1,25 @@
 - compact_grid = EventType::LENGTH_STEP < 15
-- cells_per_hour = 60 / EventType::LENGTH_STEP
 / use smaller cell heights for more compact grids
 - cell_height = compact_grid ? 32 : 58
-- date_event_schedules = @event_schedules.select{ |e| e.start_time.to_date.eql? date }
+- date_event_schedules = @event_schedules.where(start_time: date.beginning_of_day..date.end_of_day)
+- d_start = date.to_datetime.in_time_zone(@conference.timezone).change(hour: @conference.start_hour)
+- d_end = date.to_datetime.in_time_zone(@conference.timezone).change(hour: @conference.end_hour)
+- drange = (d_start.to_i..d_end.to_i).step(EventType::LENGTH_STEP.minutes)
+- slots = drange.map {|t| Time.at(t).localtime(d_start.gmt_offset).to_datetime}
+
 .row
   - @rooms.each do |room|
     .col-md-1.col-xs-6.room-col
       .room-name
         - room_date_event_schedules = date_event_schedules.select{ |e| e.room == room }
         = room.name
-      - (@conference.start_hour * cells_per_hour..@conference.end_hour * cells_per_hour).each do |slot|
-        - hour = slot / cells_per_hour
-        - minutes = (EventType::LENGTH_STEP * (slot % cells_per_hour)).to_s.rjust(2, '0')
-        - time = "#{hour}:#{minutes}"
-        .schedule-room-slot{ id: "schedule-room-#{room.guid}-#{hour}-#{minutes}", |
+      - slots.each do |slot|
+        .schedule-room-slot{ data: {slot_datetime: slot}, |
                              room_id: room.id, |
-                             hour: time, |
-                             date: date, |
                              style: "height: #{cell_height}px"}
           .div
-            = time
-          - event_schedules = room_date_event_schedules.select{ |e| (e.start_time.hour.to_s + e.start_time.strftime(':%M')).eql? time }
+            = slot.strftime('%H:%M')
+          - event_schedules = room_date_event_schedules.select{ |e| e.start_time == slot }
           - if event_schedules.any?
             - event_schedule = event_schedules.first
             = render partial: 'event', locals: { event: event_schedule.event, event_schedule_id: event_schedule.id}

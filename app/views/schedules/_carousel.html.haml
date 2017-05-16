@@ -7,7 +7,7 @@
                      "data-interval" => "false" }
   / Wrapper for slides
   .carousel-inner
-    - start_time = DateTime.parse("#{date} #{@conf_start}:00")
+    - start_time = "#{date} #{@conf_start}".in_time_zone(@conference.timezone)
     - (0..carousel_number-1).each do |number|
       %div{ class: "#{ carousel_item_class(number, carousel_number, hrs_per_slide, @hour_column)}" }
         %table.table.table-bordered.schedule-table#schedule
