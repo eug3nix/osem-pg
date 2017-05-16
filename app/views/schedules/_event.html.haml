@@ -29,9 +29,9 @@
       %span.track
         %span.fa.fa-clock-o
         %span.label{ style: "background-color: grey" }
-          = event_schedule.start_time.strftime('%H:%M')
+          = event_schedule.start_time.in_time_zone(@conference.timezone).strftime('%H:%M')
           \-
-          = event_schedule.end_time.strftime('%H:%M')
+          = event_schedule.end_time.in_time_zone(@conference.timezone).strftime('%H:%M')
       %span.track
         %span.fa.fa-map-marker
         %span.label{ style: "background-color: grey" }

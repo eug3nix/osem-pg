@@ -43,7 +43,7 @@
     - @events_schedules_groups = @events_schedules.group_by { |el| el.start_time }
     - @events_schedules_groups.each do |esg|
       - unless esg.first.strftime('%Y-%m-%d').eql?(date)
-        .col-xs-12.col-md-12
+        .col-md-12
           .date-content
             %span{ class: 'date-title', id: "#{ esg.first.strftime('%Y-%m-%d') }" }
               = date = esg.first.strftime('%Y-%m-%d')
@@ -52,7 +52,7 @@
       .row.event-group
         .col-xs-12.col-md-1
           .start-time
-            = esg.first.strftime('%H:%M')
+            = esg.first.in_time_zone(@conference.timezone).strftime('%H:%M')
         .col-xs-12.col-md-11
           .row
             - esg.second.each do |event_schedule|
