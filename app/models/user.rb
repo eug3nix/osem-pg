@@ -58,12 +58,6 @@ class User < ActiveRecord::Base
 
   validates :email, presence: true
 
-  validates :username,
-            uniqueness: {
-                case_sensitive: false
-            },
-            presence: true
-
   validate :biography_limit
 
   ##
