@@ -200,6 +200,9 @@ gem 'selectize-rails'
 # event social sharing bootstrap buttons
 gem 'bootstrap-social-rails'
 
+# for readable propopsal urls
+gem 'friendly_id', '~> 5.1.0'
+
 # Use guard and spring for testing in development
 group :development do
   # to launch specs when files are modified
