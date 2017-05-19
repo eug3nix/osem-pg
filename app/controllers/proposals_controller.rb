@@ -19,6 +19,11 @@ class ProposalsController < ApplicationController
     @comments = []
     @comments = @event.root_comments.find_comments_by_user(@current_user) if @current_user
     @ratings = @event.votes.includes(:user)
+
+    # redirect user to the slugged url
+    if request.path != conference_program_proposal_path(@conference.short_title, @event)
+      return redirect_to conference_program_proposal_path(@conference.short_title, @event), status: :moved_permanently
+    end
   end
 
   def new
@@ -201,4 +206,5 @@ class ProposalsController < ApplicationController
   def comment_params
     params.require(:comment).permit(:commentable, :body, :user_id)
   end
+
 end

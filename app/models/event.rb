@@ -78,6 +78,9 @@ class Event < ActiveRecord::Base
     end
   end
 
+  extend FriendlyId
+  friendly_id :title, use: [:slugged, :history, :finders]
+
   ##
   # Checkes if the event has a start_time and a room for the selected schedule if there is any
   # ====Returns
