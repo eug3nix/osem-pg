@@ -27,7 +27,7 @@
               %td
                 = sponsor.website_url
               %td
-                = sponsor.sponsorship_level.title
+                = sponsor.sponsorship_level.try(:title)
               %td
                 .btn-group
                   = link_to 'Edit', edit_admin_conference_sponsor_path(@conference.short_title, sponsor),
