@@ -67,8 +67,6 @@
           - @registration.events.each do |event|
             %li
               = link_to event.title, conference_program_proposal_path(@conference.short_title, event.id)
-              - unless @confernce.use_pg_flow
-                = '(' + registered_text(event) + ')'
 
   - if @registration.conference.program.events.remaining_for_registration(@registration).any?
     .row

@@ -121,7 +121,7 @@ class ConferenceRegistrationsController < ApplicationController
     # All parameters can be optional at least initially so no params are required
     params.permit(
           :registration,
-          :conference_id, :arrival, :departure,
+          :arrival, :departure,
           :volunteer,
           vchoice_ids: [], qanswer_ids: [],
           qanswers_attributes: [],
