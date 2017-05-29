@@ -615,6 +615,7 @@ class Conference < ActiveRecord::Base
   end
 
   def tickets_sold_out?
+    return false if registration_limit == 0
     ticket_purchases.sum(:quantity) >= registration_limit
   end
 
