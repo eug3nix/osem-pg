@@ -32,16 +32,15 @@
             = render 'layouts/messages'
       #content
         = yield
-    #footer{class: ('splash-footer' if content_for? :splash_base)}
-      .container
-        %p.muted.text-center
-          %small
-            This tool is
-            =link_to "free software,", "http://www.gnu.org/philosophy/free-sw.html"
-            released under the
-            =link_to "MIT license.", "http://opensource.org/licenses/MIT"
-            You can run, copy, distribute, study, change and improve it.
-            The source code and the developers are on
-            =link_to "github.", "https://github.com/openSUSE/osem"
+    #footer{class: content_for?(:splash_base) ? 'navbar-static-bottom splash-footer' : 'navbar-static-bottom' }
+      .muted.text-center
+        %small
+          This tool is
+          =link_to "free software,", "http://www.gnu.org/philosophy/free-sw.html"
+          released under the
+          =link_to "MIT license.", "http://opensource.org/licenses/MIT"
+          You can run, copy, distribute, study, change and improve it.
+          The source code and the developers are on
+          =link_to "github.", "https://github.com/openSUSE/osem"
     = content_for(:script_body)
     / = piwik_tracking_tag
