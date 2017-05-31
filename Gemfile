@@ -251,3 +251,7 @@ group :development, :test do
   # as debugger
   gem 'byebug'
 end
+
+group :production do
+  gem 'exception_notification'
+end
