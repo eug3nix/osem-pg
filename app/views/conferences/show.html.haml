@@ -32,9 +32,7 @@
 
     - if @conference.registration_open? and @conference.splashpage.include_registrations
       %section#registration
-        / = render 'registration'
-        - if @conference.short_title == '2017'
-          = render 'registration_eventbrite'
+        = render 'registration'
 
     - if @conference.splashpage.include_program
       %section#program
@@ -54,7 +52,7 @@
       %section#lodging
         = render 'lodging'
 
-    - if @conference.tickets.any? and @conference.splashpage.include_tickets and @conference.pending?
+    - if @conference.tickets.any? and @conference.splashpage.include_tickets
       %section#tickets
         = render 'tickets'
 

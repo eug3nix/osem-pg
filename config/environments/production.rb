@@ -84,3 +84,12 @@ Osem::Application.configure do
   # Set the secret_key_base from the env, if not set by any other means
   config.secret_key_base ||= ENV["SECRET_KEY_BASE"]
 end
+
+# crash notifications
+Rails.application.config.middleware.use ExceptionNotification::Rack,
+  :email => {
+    :deliver_with => :deliver, # Rails >= 4.2.1 do not need this option since it defaults to :deliver_now
+    :email_prefix => "[EXCEPTION @ #{ENV['OSEM_HOSTNAME']}]",
+    :sender_address => %{"OSEM Exceptions" <exceptions@pgconf.us>},
+    :exception_recipients => %w{eugend@commandprompt.com}
+  }

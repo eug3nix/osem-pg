@@ -68,6 +68,21 @@
             %li
               = link_to event.title, conference_program_proposal_path(@conference.short_title, event.id)
 
+  - if @registration.conference.program.events.remaining_for_registration(@registration).any?
+    .row
+      .col-md-12
+        %h4
+          %span.fa-stack
+            %i.fa.fa-square-o.fa-stack-2x
+            %i.fa.fa-question.fa-stack-1x
+          Events that require registration
+        %ul
+          - @registration.conference.program.events.remaining_for_registration(@registration).each do |event|
+            %li
+              = link_to event.title, conference_program_proposal_path(@conference.short_title, event.id)
+              - unless @conference.use_pg_flow
+                = '(' + registered_text(event) + ')'
+
   - if @conference.tickets.any?
     .row
       .col-md-12

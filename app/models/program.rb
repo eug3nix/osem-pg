@@ -122,7 +122,6 @@ class Program < ActiveRecord::Base
   # Checks if the call for papers for the conference is currently open
   #
   # ====Returns
-  # * +false+ -> If the CFP is not set or today isn't in the CFP period.
   # * +true+ -> If today is in the CFP period.
   def cfp_open?
     cfp = self.cfp
@@ -149,8 +148,9 @@ class Program < ActiveRecord::Base
   # * +True+ -> If there is any event for the given date
   # * +False+ -> If there is not any event for the given date
   def any_event_for_this_date?(date)
-    parsed_date = DateTime.parse("#{date} 00:00").utc
-    EventSchedule.where(schedule_id: selected_schedule.id).where(start_time: parsed_date..(parsed_date + 1)).any?
+    date_in_zone = date.in_time_zone(conference.timezone)
+    EventSchedule.where(schedule_id: selected_schedule.id)
+      .where(start_time: date_in_zone.beginning_of_day..date_in_zone.end_of_day).any?
   end
 
   private

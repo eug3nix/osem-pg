@@ -1,6 +1,6 @@
 class Code < ActiveRecord::Base
   belongs_to :code_type
-  has_and_belongs_to_many :conferences
+  has_and_belongs_to_many :conferences, :join_table => :conferences_codes
 
   has_and_belongs_to_many :tickets, :join_table => :codes_tickets
   belongs_to :sponsor

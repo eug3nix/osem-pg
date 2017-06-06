@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170518175717) do
+ActiveRecord::Schema.define(version: 20170519110646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -293,8 +293,10 @@ ActiveRecord::Schema.define(version: 20170518175717) do
     t.integer  "program_id"
     t.integer  "max_attendees"
     t.integer  "ticket_id"
+    t.string   "slug"
   end
 
+  add_index "events", ["slug"], name: "index_events_on_slug", using: :btree
   add_index "events", ["ticket_id"], name: "index_events_on_ticket_id", using: :btree
 
   create_table "events_back", id: false, force: :cascade do |t|
@@ -329,6 +331,19 @@ ActiveRecord::Schema.define(version: 20170518175717) do
     t.boolean  "attended",        default: false, null: false
     t.datetime "created_at"
   end
+
+  create_table "friendly_id_slugs", force: :cascade do |t|
+    t.string   "slug",                      null: false
+    t.integer  "sluggable_id",              null: false
+    t.string   "sluggable_type", limit: 50
+    t.string   "scope"
+    t.datetime "created_at"
+  end
+
+  add_index "friendly_id_slugs", ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true, using: :btree
+  add_index "friendly_id_slugs", ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type", using: :btree
+  add_index "friendly_id_slugs", ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id", using: :btree
+  add_index "friendly_id_slugs", ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type", using: :btree
 
   create_table "lodgings", force: :cascade do |t|
     t.string   "name"
@@ -708,6 +723,7 @@ ActiveRecord::Schema.define(version: 20170518175717) do
   add_foreign_key "conferences_codes", "codes"
   add_foreign_key "conferences_codes", "conferences"
   add_foreign_key "events", "tickets"
+  add_foreign_key "registrations", "conferences", name: "conf_fk"
   add_foreign_key "sponsorship_infos", "conferences"
   add_foreign_key "ticket_purchases", "codes"
   add_foreign_key "ticket_purchases", "events"

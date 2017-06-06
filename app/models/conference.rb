@@ -614,6 +614,11 @@ class Conference < ActiveRecord::Base
     registration_limit > 0 && registrations.count >= registration_limit
   end
 
+  def tickets_sold_out?
+    return false if registration_limit == 0
+    ticket_purchases.sum(:quantity) >= registration_limit
+  end
+
   # Returns an hexadecimal color given a collection. The returned color changed
   # when the number of element in the collection changes and for consecutive
   # number of elements it returns highly different colors.

@@ -62,3 +62,6 @@ OSEM_ICHAIN_ENABLED=false
 OSEM_SCHEDULE_CELL_SIZE=10
 OSEM_SCHEDULE_START_HOUR = 9
 OSEM_SCHEDULE_END_HOUR = 19
+
+# Navbar logo file, file should be placed under app/assets/images
+OSEM_NAVBAR_LOGO=""
