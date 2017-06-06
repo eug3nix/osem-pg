@@ -53,6 +53,9 @@
         = f.input :require_registration, label: 'Require participants to register to your event'
         - message = @event.room ? "Value must be between 1 and #{@event.room.size}" : 'Check room capacity after scheduling.'
         = f.input :max_attendees, hint: 'The maximum number of participants. ' + message
+        = f.input :ticket_id, as: :select,
+                collection: @conference.tickets.map {|ticket| ["#{ticket.title}", ticket.id]},
+                include_blank: true
       = f.input :is_highlight
 
     %p.text-right

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170511184814) do
+ActiveRecord::Schema.define(version: 20170518175717) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -292,7 +292,10 @@ ActiveRecord::Schema.define(version: 20170511184814) do
     t.boolean  "is_highlight",                 default: false
     t.integer  "program_id"
     t.integer  "max_attendees"
+    t.integer  "ticket_id"
   end
+
+  add_index "events", ["ticket_id"], name: "index_events_on_ticket_id", using: :btree
 
   create_table "events_back", id: false, force: :cascade do |t|
     t.integer  "id"
@@ -534,9 +537,11 @@ ActiveRecord::Schema.define(version: 20170511184814) do
     t.integer  "user_id"
     t.integer  "payment_id"
     t.integer  "code_id"
+    t.integer  "event_id"
   end
 
   add_index "ticket_purchases", ["conference_id", "code_id"], name: "index_ticket_purchases_on_conference_id_and_code_id", using: :btree
+  add_index "ticket_purchases", ["event_id"], name: "index_ticket_purchases_on_event_id", using: :btree
 
   create_table "tickets", force: :cascade do |t|
     t.integer "conference_id"
@@ -545,6 +550,7 @@ ActiveRecord::Schema.define(version: 20170511184814) do
     t.integer "price_cents",    default: 0,     null: false
     t.string  "price_currency", default: "USD", null: false
     t.boolean "hidden",         default: false
+    t.integer "position"
   end
 
   create_table "tracks", force: :cascade do |t|
@@ -701,6 +707,8 @@ ActiveRecord::Schema.define(version: 20170511184814) do
   add_foreign_key "codes_tickets", "tickets"
   add_foreign_key "conferences_codes", "codes"
   add_foreign_key "conferences_codes", "conferences"
+  add_foreign_key "events", "tickets"
   add_foreign_key "sponsorship_infos", "conferences"
   add_foreign_key "ticket_purchases", "codes"
+  add_foreign_key "ticket_purchases", "events"
 end

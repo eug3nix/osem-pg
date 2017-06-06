@@ -9,6 +9,7 @@
     .col-md-12
       %table.table.table-hover.datatable#tickets
         %thead
+          %th Position
           %th Title
           %th Price
           %th Sold
@@ -18,6 +19,13 @@
           - @conference.tickets.each do |ticket|
             %tr
               %td
+                = ticket.position
+                .btn-group-vertical{role: "group"}
+                  = link_to(up_admin_conference_ticket_path(@conference.short_title, ticket.id), method: :patch, class: 'btn btn-default btn-xs') do
+                    %i.fa.fa-chevron-up
+                  = link_to(down_admin_conference_ticket_path(@conference.short_title, ticket.id), method: :patch, class: 'btn btn-default btn-xs') do
+                    %i.fa.fa-chevron-down
+              %td
                 = link_to(admin_conference_ticket_path(@conference.short_title, ticket.id)) do
                   = ticket.title
               %td
@@ -25,7 +33,7 @@
               %td
                 = ticket.tickets_sold
               %td
-                = humanized_money_with_symbol ticket.tickets_turnover
+                = humanized_money_with_symbol TicketPurchase.total_payments(@conference, ticket)
               %td
                 .btn-group
                   = link_to 'Edit', edit_admin_conference_ticket_path(@conference.short_title, ticket.id),

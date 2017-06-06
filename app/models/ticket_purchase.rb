@@ -4,6 +4,9 @@ class TicketPurchase < ActiveRecord::Base
   belongs_to :conference
 
   belongs_to :code
+  belongs_to :event
+
+  belongs_to :payment
 
   validates :ticket_id, :user_id, :conference_id, :quantity, presence: true
 
@@ -21,16 +24,30 @@ class TicketPurchase < ActiveRecord::Base
   scope :by_conference, -> (conference) { where(conference_id: conference.id) }
   scope :by_user, -> (user) { where(user_id: user.id) }
 
-  def self.purchase(conference, user, purchases, code_id)
+  def self.total_payments(conference, ticket)
+    total_paid = TicketPurchase.where(ticket_id: ticket.id,
+                         conference_id: conference.id).joins(:payment).sum(:amount)
+
+    Money.new(total_paid)
+  end
+
+  def self.purchase(conference, user, purchases, code_id, chosen_events)
     errors = []
     ActiveRecord::Base.transaction do
       conference.tickets.each do |ticket|
+        chosen_event_id = nil
+        chosen_events.each do |key, value|
+          if key == ticket.id.to_s
+            chosen_event_id = value
+          end
+        end
+
         quantity = purchases[ticket.id.to_s].to_i
         # if the user bought the ticket, just update the quantity
         if ticket.bought?(user) && ticket.unpaid?(user)
           purchase = update_quantity(conference, quantity, ticket, user)
         else
-          purchase = purchase_ticket(conference, quantity, ticket, user, code_id)
+          purchase = purchase_ticket(conference, quantity, ticket, user, code_id, chosen_event_id)
         end
 
         if purchase && !purchase.save
@@ -41,13 +58,14 @@ class TicketPurchase < ActiveRecord::Base
     errors.join('. ')
   end
 
-  def self.purchase_ticket(conference, quantity, ticket, user, code_id)
+  def self.purchase_ticket(conference, quantity, ticket, user, code_id, event_id)
 
     purchase = new(ticket_id: ticket.id,
                    conference_id: conference.id,
                    user_id: user.id,
                    quantity: quantity,
-                   code_id: code_id) if quantity > 0
+                   code_id: code_id,
+                   event_id: event_id) if quantity > 0
     purchase
   end
 

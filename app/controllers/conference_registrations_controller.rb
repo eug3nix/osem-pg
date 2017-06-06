@@ -110,6 +110,16 @@ class ConferenceRegistrationsController < ApplicationController
                     error: "Can't find a registration for #{@conference.title} for you. Please register."
       end
     end
+
+    current_user.ticket_purchases.by_conference(@conference).paid.each do |tp|
+      if tp.event.present?
+        if @registration.events.exclude? tp.event
+          @registration.events << tp.event
+        end
+      end
+
+    end
+
   end
 
   def user_params
@@ -121,7 +131,7 @@ class ConferenceRegistrationsController < ApplicationController
     # All parameters can be optional at least initially so no params are required
     params.permit(
           :registration,
-          :conference_id, :arrival, :departure,
+          :arrival, :departure,
           :volunteer,
           vchoice_ids: [], qanswer_ids: [],
           qanswers_attributes: [],

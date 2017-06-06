@@ -99,6 +99,24 @@
           - if @event.require_registration
             = registered_text(@event)
 
+      %tr
+        %td
+          %b Ticket Required
+        %td
+          .dropdown
+            = link_to '#', class: 'dropdown-toggle', id: 'ticket-dropdown' do
+              - if @event.ticket.nil?
+                Ticket
+              - else
+                = @event.ticket.title
+              <b class="caret"></b>
+            %ul.dropdown-menu
+              - @tickets.each do |ticket|
+                %li= link_to ticket.title, admin_conference_program_event_path(@conference.short_title,
+                                            @event,
+                                            event: { ticket_id: ticket.id }),
+                method: :patch
+
       -if @program.languages.present?
         %tr
           %td

@@ -17,6 +17,27 @@ function update_price($this){
     $('#total_price').text(total);
 }
 
+function update_quantity(chk_bx, ticket_id){
+    if(chk_bx.checked) {
+        document.getElementById('tickets__' + ticket_id).value = '1';
+    } else {
+        document.getElementById('tickets__' + ticket_id).value = '0';
+        var elems = document.querySelectorAll('input[id^="chosen_events__' + ticket_id + '_"]');
+        for (var i = 0, len = elems.length; i < len; i++){
+            elems[i].checked = false;
+        }
+    }
+    document.getElementById('tickets__' + ticket_id).dispatchEvent(new Event('change'));
+}
+
+function update_event(rb, ticket_id){
+    if(rb.checked) {
+        document.getElementById('cb__' + ticket_id).checked = true;
+        document.getElementById('tickets__' + ticket_id).value = '1'
+        document.getElementById('tickets__' + ticket_id).dispatchEvent(new Event('change'));
+    }
+}
+
 $( document ).ready(function() {
     $('.quantity').each(function() {
         update_price($(this));

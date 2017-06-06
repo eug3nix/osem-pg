@@ -45,6 +45,16 @@ module Admin
       end
     end
 
+    def up
+      @ticket.move_higher
+      redirect_to admin_conference_tickets_path(conference_id: @conference.short_title)
+    end
+
+    def down
+      @ticket.move_lower
+      redirect_to admin_conference_tickets_path(conference_id: @conference.short_title)
+    end
+
     private
 
     def ticket_params
