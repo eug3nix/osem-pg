@@ -15,6 +15,10 @@ Osem::Application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
 
+  # custom error pages
+  match "/404", :to => "errors#not_found", :via => :all
+  match "/500", :to => "errors#internal_server_error", :via => :all
+
   resources :users, except: [:new, :index, :create, :destroy]
 
   namespace :admin do
