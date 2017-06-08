@@ -8,7 +8,7 @@
       .col-md-12.primary
         %h3 There is a problem and we are awawre of it. Please try again later.
         %p
-          %a{href: "#"} Take me back!
+          %a{href: 'javascript:history.back()'} Take me back!
           - unless ENV['OSEM_MAINTAINER_EMAIL_ADDRESS'].blank?
             \ or 
             %a{href: "mailto: #{ENV['OSEM_MAINTAINER_EMAIL_ADDRESS']}"} Report a problem
