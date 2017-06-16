@@ -66,7 +66,6 @@ module Osem
     config.active_record.raise_in_transactional_callbacks = true
     config.active_job.queue_adapter = :delayed_job
     config.autoload_paths << "#{Rails.root}/app/models/legacy"
-
-    Rails.logger = Logger.new(STDOUT)
+    config.exceptions_app = self.routes
   end
 end
