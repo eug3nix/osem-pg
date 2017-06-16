@@ -36,9 +36,11 @@ class TicketPurchase < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       conference.tickets.each do |ticket|
         chosen_event_id = nil
-        chosen_events.each do |key, value|
-          if key == ticket.id.to_s
-            chosen_event_id = value
+        if chosen_events.present?
+          chosen_events.each do |key, value|
+            if key == ticket.id.to_s
+              chosen_event_id = value
+            end
           end
         end
 
