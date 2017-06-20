@@ -48,14 +48,15 @@ class EmailSettings < ActiveRecord::Base
     h
   end
 
-  def generate_event_mail(event, event_template)
+  def expand_event_template(event, template)
     values = get_values(event.program.conference, event.submitter, event)
-    parse_template(event_template, values)
+    parse_template(template, values)
   end
 
-  def generate_email_on_conf_updates(conference, user, conf_update_template)
+
+  def expand_conf_template(conference, user, template)
     values = get_values(conference, user)
-    parse_template(conf_update_template, values)
+    parse_template(template, values)
   end
 
   private

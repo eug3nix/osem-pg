@@ -40,12 +40,15 @@ $(function () {
     $('.dropdown-toggle').dropdown();
 
     /**
-     * Adds the default template as value to the regarding email textarea field.
+     * Adds the default template as value to the regarding email subject and body input fields.
      */
     $(".load_template").on('click', function () {
-        var template = $(this).data('template');
-        var textarea_name = $(this).data('name');
-        $('#' + textarea_name).val(template);
+        var subject_template = $(this).data('subjecttemplate');
+        var body_template = $(this).data('bodytemplate');
+        var subject_input_name = $(this).data('subjectinputname');
+        var body_input_name = $(this).data('bodyinputname');
+        $('#' + subject_input_name).val(subject_template);
+        $('#' + body_input_name).val(body_template);
     });
 
     /**
