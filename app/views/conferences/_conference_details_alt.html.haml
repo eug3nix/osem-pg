@@ -19,9 +19,9 @@
                   = "#{conference.venue.city}/#{conference.venue.country_name}"
 
             .col-md-3.register
-              - unless conference.registration_open? && !conference.user_registered?(current_user)
-                = link_to "Tickets", conference_tickets_path(conference.short_title), class: "btn btn-success btn-lg btn-block btn-cta pull-right", disabled: conference.registration_limit_exceeded?
-                - if conference.registration_limit_exceeded?
+              - if conference.registration_open? && conference.tickets.any?
+                = link_to "Tickets", conference_tickets_path(conference.short_title), class: "btn btn-success btn-lg btn-block btn-cta pull-right", disabled: conference.tickets_sold_out?
+                - if conference.tickets_sold_out?
                   Sorry, no places left
           .row.description
             .col-md-12
