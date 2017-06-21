@@ -24,7 +24,7 @@ class Conference < ActiveRecord::Base
   has_many :ticket_purchases, dependent: :destroy
   has_many :payments, dependent: :destroy
   has_many :supporters, through: :ticket_purchases, source: :user
-  has_many :tickets, dependent: :destroy
+  has_many :tickets, -> { order('position ASC') }, dependent: :destroy
 
   has_many :lodgings, dependent: :destroy
   has_many :activities, dependent: :destroy

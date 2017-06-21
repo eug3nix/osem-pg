@@ -6,11 +6,6 @@
 - elsif can? :new, conference.program.events.new
   - unless conference.ended?
     = link_to "Submit Proposal", new_conference_program_proposal_path(conference.short_title), :class =>"btn btn-default"
-- if current_user.nil? || !current_user.subscribed?(conference)
-  - unless conference.ended?
-    = link_to 'Subscribe', conference_subscriptions_path(conference.short_title), method: :post, class: 'btn btn-default'
-- else
-  = link_to 'Unsubscribe', conference_subscriptions_path(conference.short_title), method: :delete, class: 'btn btn-default'
 - if conference.program and conference.program.schedule_public
   = link_to "Schedule", conference_schedule_path(conference.short_title), :class =>"btn btn-default"
 - if !@conference || @conference != conference

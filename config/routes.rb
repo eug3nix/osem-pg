@@ -76,7 +76,12 @@ Osem::Application.routes.draw do
         end
       end
 
-      resources :tickets
+      resources :tickets do
+        member do
+          patch :up
+          patch :down
+        end
+      end
       resources :sponsors, except: [:show]
       resources :lodgings, except: [:show]
       resources :activities, except: [:show]

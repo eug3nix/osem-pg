@@ -26,6 +26,7 @@ module Admin
       @scheduled_event_distribution = @conference.scheduled_event_distribution
       @file_name = "events_for_#{@conference.short_title}"
       @event_export_option = params[:event_export_option]
+      @tickets = @conference.tickets
 
       respond_to do |format|
         format.html
@@ -50,6 +51,7 @@ module Admin
       @comment_count = @event.comment_threads.count
       @ratings = @event.votes.includes(:user)
       @difficulty_levels = @program.difficulty_levels
+      @tickets = @conference.tickets
       @versions = @event.versions |
        PaperTrail::Version.where(item_type: 'Commercial').where_object(commercialable_id: @event.id, commercialable_type: 'Event') |
        PaperTrail::Version.where(item_type: 'Commercial').where_object_changes(commercialable_id: @event.id, commercialable_type: 'Event')
@@ -180,7 +182,7 @@ module Admin
                                     # Set also in proposals controller
                                     :title, :subtitle, :event_type_id, :abstract, :description, :require_registration, :difficulty_level_id,
                                     # Set only in admin/events controller
-                                    :track_id, :state, :language, :is_highlight, :max_attendees,
+                                    :track_id, :state, :language, :is_highlight, :max_attendees, :ticket_id,
                                     # Not used anymore?
                                     :proposal_additional_speakers, :user, :users_attributes,
                                     :speaker_ids => []

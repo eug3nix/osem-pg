@@ -1,4 +1,11 @@
 %tr
+  %td.col-sm-1.col-md-1{:align=>"right", :style=>"width: 5%"}
+    = hidden_field_tag("tickets[][#{ticket.id}]", 0,
+      type: 'number', min: 0, class: "form-control quantity", 'data-id' => ticket.id)
+    %div.pretty.success.smooth
+      = check_box_tag("cb[][#{ticket.id}]", "#{ticket.id}", false, class: "fa fa-check",
+        onchange: "update_quantity(this, #{ticket.id});")
+      = label_tag(nil, '<i class="fa fa-check"></i>'.html_safe)
   %td.col-sm-8.col-md-6
     .media
       .media-body
@@ -7,9 +14,30 @@
         %h5.media-heading
         - unless ticket.description.blank?
           = markdown(ticket.description)
-  %td.col-sm-1.col-md-1
-    = text_field_tag("tickets[][#{ticket.id}]", 0,
-      type: 'number', min: 0, class: "form-control quantity", 'data-id' => ticket.id)
+          - if ticket.ticketed_events.present?
+            .tickets
+              %table{:style=>"border-spacing: 5; border-collapse: separate"}
+                %tbody
+                  - ticket.ticketed_events.each do |event|
+                    %tr
+                      %td
+                        %div.pretty.circle.success
+                          = radio_button_tag("chosen_events[][#{ticket.id}]", event.id, false,
+                            onchange: "update_event(this, #{ticket.id});")
+                          = label_tag(nil, '<i class="fa fa-check"></i>'.html_safe)
+                      %td
+                        %a{ href: '#', data: { toggle: 'modal', target: "#modal_#{event.id}" } }
+                          = event.title
+
+                    .modal.fade{ id: "modal_#{event.id}" }
+                      .modal-dialog
+                        .modal-content
+                          .modal-header
+                            %button.close{ data: { dismiss: 'modal' } }
+                              x
+                          .modal-body.text-center
+                            = render partial: 'event_listing', locals: { event: event }
+
   %td.col-sm-1.col-md-1.text-center
     = ticket.price.symbol
     %span{id: "price_#{ticket.id}"}

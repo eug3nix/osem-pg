@@ -1,7 +1,11 @@
 class Ticket < ActiveRecord::Base
   belongs_to :conference
+  acts_as_list scope: :conference
+
   has_many :ticket_purchases, dependent: :destroy
+  has_many :events
   has_many :buyers, -> { distinct }, through: :ticket_purchases, source: :user
+  has_many :payments, through: :ticket_purchases
 
   has_and_belongs_to_many :codes, :join_table => :codes_tickets
 
@@ -67,10 +71,6 @@ class Ticket < ActiveRecord::Base
     ticket_purchases.sum(:quantity)
   end
 
-  def tickets_turnover
-    tickets_sold * price
-  end
-
   def adjusted_price
     if applied_code.present?
       if Ticket.where(id: id).joins(:codes).where("codes.id = ?", applied_code.id).count > 0
@@ -94,6 +94,10 @@ class Ticket < ActiveRecord::Base
     else
       where(hidden: false)
     end
+  end
+
+  def ticketed_events
+    events.where(ticket_id: id)
   end
 
   private
