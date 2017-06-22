@@ -10,8 +10,15 @@
               .col-md-4
                 = image_tag(@conference.picture_url, class: 'img-responsive img-center', id: 'splash-logo') if @conference.picture?
               .col-md-8
-                %h1
-                  = @conference.title
+                .row
+                  .col-md-8
+                    %h1
+                      = @conference.title
+                  .col-md-4
+                    - if @conference.registration_open? && @conference.tickets.any?
+                      = link_to "Tickets", conference_tickets_path(@conference.short_title), class: "btn btn-success btn-lg btn-block btn-cta pull-right", disabled: @conference.tickets_sold_out?
+                      - if @conference.tickets_sold_out?
+                        Sorry, no places left
                 %p.lead
                   - if @conference.venue
                     = "#{@conference.venue.city} / #{@conference.venue.country_name}"
