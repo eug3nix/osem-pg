@@ -150,7 +150,7 @@ class Program < ActiveRecord::Base
   def any_event_for_this_date?(date)
     date_in_zone = date.in_time_zone(conference.timezone)
     EventSchedule.where(schedule_id: selected_schedule.id)
-      .where(start_time: date_in_zone.beginning_of_day..date_in_zone.end_of_day).any?
+      .where(start_time: date_in_zone.beginning_of_day..date_in_zone.end_of_day).any? if selected_schedule
   end
 
   private
