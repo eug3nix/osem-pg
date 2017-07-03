@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170519110646) do
+ActiveRecord::Schema.define(version: 20170703121241) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -81,7 +81,7 @@ ActiveRecord::Schema.define(version: 20170519110646) do
     t.integer  "code_type_id"
     t.integer  "conference_id"
     t.integer  "discount"
-    t.integer  "max_uses"
+    t.integer  "max_uses",      default: 0, null: false
     t.integer  "sponsor_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -147,9 +147,9 @@ ActiveRecord::Schema.define(version: 20170519110646) do
     t.string   "picture"
     t.integer  "start_hour",           default: 9
     t.integer  "end_hour",             default: 20
+    t.string   "background_file_name"
     t.boolean  "require_itinerary"
     t.boolean  "use_pg_flow",          default: true
-    t.string   "background_file_name"
   end
 
   create_table "conferences_codes", id: false, force: :cascade do |t|
@@ -292,8 +292,8 @@ ActiveRecord::Schema.define(version: 20170519110646) do
     t.boolean  "is_highlight",                 default: false
     t.integer  "program_id"
     t.integer  "max_attendees"
-    t.integer  "ticket_id"
     t.string   "slug"
+    t.integer  "ticket_id"
   end
 
   add_index "events", ["slug"], name: "index_events_on_slug", using: :btree
@@ -723,7 +723,6 @@ ActiveRecord::Schema.define(version: 20170519110646) do
   add_foreign_key "conferences_codes", "codes"
   add_foreign_key "conferences_codes", "conferences"
   add_foreign_key "events", "tickets"
-  add_foreign_key "registrations", "conferences", name: "conf_fk"
   add_foreign_key "sponsorship_infos", "conferences"
   add_foreign_key "ticket_purchases", "codes"
   add_foreign_key "ticket_purchases", "events"

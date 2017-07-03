@@ -13,8 +13,8 @@ class TicketsController < ApplicationController
       @discount_pct = 0.0
 
       if code.present?
-        if TicketPurchase.get_code_usage(@conference, code) >= code.max_uses
-          flash.now[:notice] = "The Promotional Code (#{applied_code}) has aleady been used"
+        if TicketPurchase.get_code_usage(@conference, code) >= code.max_uses && code.max_uses != 0
+          flash.now[:warning] = "The Promotional Code (#{applied_code}) has aleady been used"
         else
           flash.now[:notice] = "The Promotional Code (#{applied_code}) has been applied."
           @applied_code = code
