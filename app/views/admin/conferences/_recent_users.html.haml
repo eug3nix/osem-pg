@@ -1,4 +1,4 @@
-- if recent_users && !recent_users.empty?
+- if recent_users && recent_users.any?
   .table-responsive
     %table.table
       %thead
@@ -12,7 +12,7 @@
           %tr
             %td= index + 1
             %td= link_to user.email, admin_user_path(user.id)
-            %td= user.created_at.strftime('%m/%d/%Y')
+            %td= user.try(:created_at).strftime('%m/%d/%Y')
             %td
               = check_box_tag user.id, user.id, user.confirmed?, 
                 method: :patch, 
