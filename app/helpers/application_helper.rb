@@ -1,3 +1,5 @@
+require 'redcarpet/render_strip'
+
 module ApplicationHelper
   ##
   # Checks if the voting has already started, or if it has already ended
@@ -261,6 +263,12 @@ module ApplicationHelper
       no_intra_emphasis: true
     }
     markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, options)
+    markdown.render(text).html_safe
+  end
+
+  def strip_markdown(text)
+    return '' if text.nil?
+    markdown = Redcarpet::Markdown.new(Redcarpet::Render::StripDown)
     markdown.render(text).html_safe
   end
 
