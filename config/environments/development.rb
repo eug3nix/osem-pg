@@ -95,5 +95,5 @@ Osem::Application.configure do
       devise_config.ichain_test_mode = true
     end
   end
-
+  Rails.configuration.use_braintree = true
 end

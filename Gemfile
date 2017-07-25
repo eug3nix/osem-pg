@@ -8,6 +8,8 @@ end
 # as web framework
 gem 'rails', '~> 4.2'
 
+gem 'braintree'
+gem 'gon', '~> 5.1.2'
 # enables serving assets in production and setting your logger to standard out
 # both of which are required to run an application on a twelve-factor provider
 # like heroku.com

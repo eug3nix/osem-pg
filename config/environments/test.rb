@@ -51,5 +51,5 @@ Osem::Application.configure do
     Timecop.travel(t)
     ActiveSupport::Deprecation.silenced = true
   end
-
+  Rails.configuration.use_braintree = true
 end
