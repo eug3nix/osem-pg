@@ -1,45 +1,28 @@
 .container
-  .row
+  %h2.text-center
+    Program
+  - if @conference.program and @conference.program.schedule_public
     .col-md-12
-      - if @conference.program.events.highlights.any?
-        %h2.text-center
-          Conference Highlights
-        - @conference.program.events.highlights.each_slice(2) do |slice|
-          .row.row-centered
-            - slice.each do |event|
-              .col-md-6.col-centered.col-top.highlights
-                %h4.strong
-                  - if event.time
-                    %span.fa.fa-calendar-o
-                    = event.time.to_date.strftime('%b %d')
-                  = link_to event.title, conference_program_proposal_path(@conference.short_title, event)
-                %h5
-                  = strip_markdown truncate(event.abstract, length: 500, separator: ' ')
-
-      %h2.text-center
-        Program
-    - if @conference.program and @conference.program.schedule_public
-      .col-md-12
-        %p.cta-button.text-center
-          = link_to(events_conference_schedule_path(@conference.short_title), class: 'btn btn-default btn-lg') do
-            Full Schedule
-      %p.lead.text-center
-        %span.notranslate
-          = @conference.short_title
-        has the most awesome program ever!
-        %br
-        - if @conference.splashpage and @conference.program.tracks.any? and @conference.splashpage.include_tracks
-          See rock-star speakers cover the topics of
-      - if @conference.splashpage and @conference.splashpage.include_tracks
-        - @conference.program.tracks.each_slice(3) do |slice|
-          .row.row-centered
-            - slice.each do |track|
-              .col-md-4.col-sm-4.col-centered.col-top.track
-                %h4.text-center{'style'=>"border-bottom: 4px solid #{track.color}"}
-                  = track.name
-                - track.events.joins(:event_type).where(state: 'confirmed').each do |event|
-                  %p
-                    = "#{event.title} by #{event.speakers_ordered.first.try(:name) || 'Unknown Speaker'}" unless event.event_type.internal_event?
+      %p.cta-button.text-center
+        = link_to(events_conference_schedule_path(@conference.short_title), class: 'btn btn-default btn-lg') do
+          Full Schedule
+    %p.lead.text-center
+      %span.notranslate
+        = @conference.short_title
+      has the most awesome program ever!
+      %br
+      - if @conference.splashpage and @conference.program.tracks.any? and @conference.splashpage.include_tracks
+        See rock-star speakers cover the topics of
+    - if @conference.splashpage and @conference.splashpage.include_tracks
+      - @conference.program.tracks.each_slice(3) do |slice|
+        .row.row-centered
+          - slice.each do |track|
+            .col-md-4.col-sm-4.col-centered.col-top.track
+              %h4.text-center{'style'=>"border-bottom: 4px solid #{track.color}"}
+                = track.name
+              - track.events.joins(:event_type).where(state: 'confirmed').each do |event|
+                %p
+                  = "#{event.title} by #{event.speakers_ordered.first.try(:name) || 'Unknown Speaker'}" unless event.event_type.internal_event?
 
   - if @conference.program and @conference.program.schedule_public
     .row

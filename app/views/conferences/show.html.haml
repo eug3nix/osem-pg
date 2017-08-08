@@ -42,6 +42,9 @@
         = render 'registration'
 
     - if @conference.splashpage.include_program
+      - if @conference.program.events.highlights.any?
+        %section#highlights
+          = render 'hightlights'
       %section#program
         = render 'schedule_splashpage'
 
