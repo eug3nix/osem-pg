@@ -22,24 +22,27 @@ class PaymentsController < ApplicationController
 
   def create
    if Rails.configuration.use_braintree
+      nonce = params[:payment_method_nonce]
+
       result = Braintree::Transaction.sale(
         :amount => Ticket.total_price(@conference, current_user, paid: false),
-        :payment_method_nonce => 'fake-valid-nonce',
+        :payment_method_nonce => nonce,
         :options => {
             :submit_for_settlement => true
         }
 
      )
       if result.success? == true
-      update_purchased_ticket_purchases
-      redirect_to conference_conference_registration_path(@conference.short_title),
+        update_purchased_ticket_purchases
+        redirect_to conference_conference_registration_path(@conference.short_title),
                    notice: 'Thanks! Your ticket is booked successfully.'
-
       else
-      @total_amount_to_pay = Ticket.total_price(@conference, current_user, paid: false)
-       @unpaid_quantity = Ticket.total_quantity(@conference, current_user, paid: false)
-      @unpaid_ticket_purchases = current_user.ticket_purchases.unpaid.by_conference(@conference)
-      flash[:error] = @payment.errors.full_messages.to_sentence + ' Please try again with correct credentials.'
+        @total_amount_to_pay = Ticket.total_price(@conference, current_user, paid: false)
+        @unpaid_quantity = Ticket.total_quantity(@conference, current_user, paid: false)
+        @unpaid_ticket_purchases = current_user.ticket_purchases.unpaid.by_conference(@conference)
+        @error_messages = result.errors.map { |error| "Error: #{error.code}: #{error.message}" }
+        flash[:error] = @error_messages 
+        render "new"
       end
 
    else
@@ -60,7 +63,7 @@ class PaymentsController < ApplicationController
 
 
   def payment_params
-    params.permit(:stripe_customer_email, :stripe_customer_token)
+    params.permit(:stripe_customer_email, :stripe_customer_token, :payment_method_nonce)
         .merge(stripe_customer_email: params[:stripeEmail],
                stripe_customer_token: params[:stripeToken],
                user: current_user, conference: @conference)

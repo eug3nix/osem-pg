@@ -5,6 +5,7 @@ class Payment < ActiveRecord::Base
 
   attr_accessor :stripe_customer_email
   attr_accessor :stripe_customer_token
+  attr_accessor :payment_method_nonce
 
   validates :status, presence: true
   validates :user_id, presence: true

@@ -18,7 +18,7 @@
             = humanized_money_with_symbol ticket.adjusted_price
           %td
             = humanized_money_with_symbol ticket.quantity * ticket.adjusted_price
--if !Rails.configuration.use_braintree
+- if !Rails.configuration.use_braintree
   = form_tag conference_payments_path do
     - if @total_amount_to_pay.cents > 0
       %script.stripe-button{ src: "https://checkout.stripe.com/checkout.js",
@@ -30,24 +30,24 @@
         = button_tag(type: 'submit', class: 'btn btn-success btn-lg') do
           Confirm
 
-  = link_to 'Edit Purchase', conference_tickets_path(@conference.short_title), class: 'btn btn-default'
--if Rails.configuration.use_braintree
-  %body
-    %script{:src => "https://js.braintreegateway.com/web/dropin/1.4.0/js/dropin.min.js"}
-    %input{id:'nonce',type:'hidden'}
+- else
+  - @client_token = Braintree::ClientToken.generate
+  = form_tag conference_payments_path, id: 'payment-form' do
+    = hidden_field_tag("payment_method_nonce", nil, :id => "nonce")
     #dropin-container
-    =form_tag(conference_payments_path, method: :post,id: "payment-form")
     %button{id:'submit-button' ,class:'stripe-button-el',display:'none'} Pay #{humanized_money_with_symbol @total_amount_to_pay}
 
   :javascript
     var form = document.querySelector('#payment-form');
-    var client_token = 'sandbox_ws4v4q3x_k6p7dds39rgwdw9g';
+    var client_token = '#{@client_token}';
+
+    braintree.setup(client_token, "dropin", {
+      container: "payment-form"
+    });
+
     braintree.dropin.create({
       authorization: client_token,
-      container: '#dropin-container',
-      paypal: {
-        flow: 'vault'
-      }
+      selector: '#dropin-container'
     }, function (createErr, instance) {
       form.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -65,3 +65,6 @@
     var checkout = new Demo({
       formID: 'payment-form'
     });
+
+= link_to 'Edit Purchase', conference_tickets_path(@conference.short_title), class: 'btn btn-default'
+
