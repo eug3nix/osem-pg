@@ -59,7 +59,8 @@ class Conference < ActiveRecord::Base
                         :start_date,
                         :end_date,
                         :start_hour,
-                        :end_hour
+                        :end_hour,
+                        :default_currency
 
   validates_uniqueness_of :short_title
   validates_format_of :short_title, with: /\A[a-zA-Z0-9_-]*\z/
@@ -658,6 +659,14 @@ class Conference < ActiveRecord::Base
   def get_valid_code(applied_code)
     code = codes.where(name: applied_code).first
     code
+  end
+
+  def available_currency_codes
+    currencies = []
+    Money::Currency.table.values.each do |currency|
+      currencies = currencies + [[currency[:name] + ' (' + currency[:iso_code] + ')', currency[:iso_code]]]
+    end
+    currencies
   end
 
   private

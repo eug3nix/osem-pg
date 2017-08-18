@@ -4,7 +4,7 @@ function update_price($this){
     // Calculate price for row
     var value = $this.val();
     var price = $('#price_' + id).text();
-    var row_total = accounting.formatMoney(value * price);
+    var row_total = accounting.formatMoney(value * price, parent.currency_symbol, 0, parent.currency_delimiter, parent.currency_separator);
     $('#total_row_' + id).text(row_total);
 
     // Calculate total price
@@ -13,7 +13,7 @@ function update_price($this){
         var row_val = accounting.unformat($(this).text());
         total += parseFloat(row_val);
     });
-    total = accounting.formatMoney(total);
+    total = accounting.formatMoney(total, parent.currency_symbol, 0, parent.currency_delimiter, parent.currency_separator);
     $('#total_price').text(total);
 }
 

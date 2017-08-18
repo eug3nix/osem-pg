@@ -27,15 +27,29 @@ class PaymentsController < ApplicationController
       result = Braintree::Transaction.sale(
         :amount => Ticket.total_price(@conference, current_user, paid: false),
         :payment_method_nonce => nonce,
+        :merchant_account_id => @conference.braintree_merchant_account,
+        :customer => {
+            :email => current_user.email,
+            :first_name => current_user.first_name,
+            :last_name => current_user.last_name
+        },
         :options => {
             :submit_for_settlement => true
         }
 
      )
       if result.success? == true
-        update_purchased_ticket_purchases
-        redirect_to conference_conference_registration_path(@conference.short_title),
-                   notice: 'Thanks! Your ticket is booked successfully.'
+        @payment = Payment.new payment_params
+        @payment.authorization_code = result.transaction.id
+        @payment.amount = result.transaction.amount * 100 
+        @payment.last4 = result.transaction.credit_card_details.last_4
+        @payment.status = 1
+
+        if @payment.save
+          update_purchased_ticket_purchases
+          redirect_to conference_conference_registration_path(@conference.short_title),
+                     notice: 'Thanks! Your ticket is booked successfully.'
+        end
       else
         @total_amount_to_pay = Ticket.total_price(@conference, current_user, paid: false)
         @unpaid_quantity = Ticket.total_quantity(@conference, current_user, paid: false)
