@@ -10,8 +10,8 @@ module ShareableHelper
 
   HANDLE_REGEX=/((https?:\/\/)?(www\.)?twitter\.com\/)?(@|#!\/)?([A-Za-z0-9_]{1,15})(\/([-a-z]{1,20}))?/
   def get_twitter_handle(event)
-    res = HANDLE_REGEX.match(event.program.conference.contact.twitter)
-    res[5]
+    twitter = event.program.conference.contact.twitter
+    return HANDLE_REGEX.match(twitter)[5] unless twitter.blank?
   end
 end
 
