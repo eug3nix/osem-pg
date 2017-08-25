@@ -107,6 +107,12 @@ Osem::Application.routes.draw do
         end
       end
 
+      resources :policies do
+        collection do
+          patch :update_conference
+        end
+      end
+
       resources :codes do
         collection do
           patch :update_conference

@@ -50,6 +50,9 @@
         - if can? :update, @conference
           %li{:class=> active_nav_li(admin_conference_sponsorship_info_path(@conference.short_title))}
             = link_to 'Sponsors Information', admin_conference_sponsorship_info_path(@conference.short_title)
+        - if can? :update, Policy.new(conference_id: @conference.id)
+          %li{ class: active_nav_li(admin_conference_policies_path(@conference.short_title)) }
+            = link_to 'Policies', admin_conference_policies_path(@conference.short_title)
   - if can? :show, Venue.new(conference_id: @conference.id)
     %li{:class=> "#{active_nav_li(admin_conference_venue_path(@conference.short_title))}"}
       = link_to(admin_conference_venue_path(@conference.short_title)) do

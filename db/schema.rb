@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170817154058) do
+ActiveRecord::Schema.define(version: 20170820181840) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -160,6 +160,13 @@ ActiveRecord::Schema.define(version: 20170817154058) do
   end
 
   add_index "conferences_codes", ["conference_id", "code_id"], name: "index_conferences_codes_on_conference_id_and_code_id", unique: true, using: :btree
+
+  create_table "conferences_policies", id: false, force: :cascade do |t|
+    t.integer "conference_id"
+    t.integer "policy_id"
+  end
+
+  add_index "conferences_policies", ["conference_id", "policy_id"], name: "index_conferences_policies_on_conference_id_and_policy_id", unique: true, using: :btree
 
   create_table "conferences_questions", id: false, force: :cascade do |t|
     t.integer "conference_id"
@@ -379,6 +386,15 @@ ActiveRecord::Schema.define(version: 20170817154058) do
     t.integer  "conference_id",                  null: false
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+  end
+
+  create_table "policies", force: :cascade do |t|
+    t.string   "title"
+    t.integer  "conference_id"
+    t.boolean  "global"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "programs", force: :cascade do |t|
@@ -731,7 +747,10 @@ ActiveRecord::Schema.define(version: 20170817154058) do
   add_foreign_key "codes_tickets", "tickets"
   add_foreign_key "conferences_codes", "codes"
   add_foreign_key "conferences_codes", "conferences"
+  add_foreign_key "conferences_policies", "conferences"
+  add_foreign_key "conferences_policies", "policies"
   add_foreign_key "events", "tickets"
+  add_foreign_key "policies", "conferences"
   add_foreign_key "sponsorship_infos", "conferences"
   add_foreign_key "ticket_purchases", "codes"
   add_foreign_key "ticket_purchases", "events"
