@@ -149,3 +149,21 @@
       = link_to(admin_conference_roles_path(@conference.short_title)) do
         %span.fa.fa-group
         Roles
+
+  %hr
+  %li
+    %a
+      %span.fa.fa-globe
+      Globals
+    %ul
+      - if can? :index, User
+        %li
+          = link_to(admin_users_path) do
+            %span.fa.fa-user
+            Users
+      - if can? :index, PaperTrail::Version.new(item_type: 'User')
+        %li
+          = link_to(admin_revision_history_path) do
+            %span.fa.fa-history
+            Revision History
+
