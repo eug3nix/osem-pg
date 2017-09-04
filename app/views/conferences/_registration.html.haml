@@ -31,3 +31,14 @@
           %p.cta-button
             = link_to(new_conference_conference_registration_path(@conference.short_title), class: 'btn btn-lg btn-warning') do
               Register Now
+
+- content_for :script_head do
+  :javascript
+    $(function () {
+      $('#wrapper').countdown('#{@conference.registration_period.end_date.strftime}', function(event) {
+        $('#reg-days').html(event.strftime('<h1>%D</h1> days'));
+        $('#reg-hours').html(event.strftime('<h1>%H</h1> hours'));
+        $('#reg-minutes').html(event.strftime('<h1>%M</h1> minutes'));
+        $('#reg-seconds').html(event.strftime('<h1>%S</h1> seconds'));
+      });
+    });

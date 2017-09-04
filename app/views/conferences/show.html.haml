@@ -118,12 +118,6 @@
           $('#banner').css('background-image', 'url(#{@conference.background_url})');
         }
       });
-      $('#wrapper').countdown('#{@conference.registration_period.end_date.strftime}', function(event) {
-        $('#reg-days').html(event.strftime('<h1>%D</h1> days'));
-        $('#reg-hours').html(event.strftime('<h1>%H</h1> hours'));
-        $('#reg-minutes').html(event.strftime('<h1>%M</h1> minutes'));
-        $('#reg-seconds').html(event.strftime('<h1>%S</h1> seconds'));
-      });
 
       $('.navbar-toggle').click(function(){
         var top = $(window).scrollTop();
