@@ -66,9 +66,6 @@
       %section#tickets
         = render 'tickets'
 
-    %section#policies
-      = render 'policies'
-
     - if @conference.contact.has_social_media? and @conference.splashpage.include_social_media
       %section#social-media
         = render 'social_media'

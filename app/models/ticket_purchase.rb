@@ -25,10 +25,10 @@ class TicketPurchase < ActiveRecord::Base
   scope :by_user, -> (user) { where(user_id: user.id) }
 
   def self.total_payments(conference, ticket)
-    total_paid = TicketPurchase.where(ticket_id: ticket.id,
+    total_paid = TicketPurchase.where(ticket_id: ticket.id, paid: true,
                          conference_id: conference.id).joins(:payment).sum(:amount)
 
-    Money.new(total_paid)
+    Money.new(total_paid, conference.default_currency)
   end
 
   def self.purchase(conference, user, purchases, code_id, chosen_events)

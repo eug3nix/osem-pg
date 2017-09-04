@@ -6,6 +6,19 @@ MoneyRails.configure do |config|
   #
   config.default_currency = :usd
 
+
+  config.register_currency = {
+    :priority            => 2,
+    :iso_code            => "ZAR",
+    :name                => "South African rand",
+    :symbol              => "R",
+    :symbol_first        => true,
+    :subunit             => "cent",
+    :subunit_to_unit     => 100,
+    :thousands_separator => " ",
+    :decimal_mark        => ","
+  }
+
   # Set default bank object
   #
   # Example:

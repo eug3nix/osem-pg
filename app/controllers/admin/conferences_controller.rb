@@ -182,13 +182,15 @@ module Admin
                                          :rooms_attributes, :tracks_attributes,
                                          :tickets_attributes, :event_types_attributes,
                                          :picture, :picture_cache, :background, :background_cache,
+                                         :policies_attributes,:policy_ids,
                                          :questions_attributes,:question_ids, :answers_attributes,
                                          :answer_ids, :difficulty_levels_attributes,
                                          :use_vpositions, :use_vdays, :vdays_attributes,
                                          :vpositions_attributes, :use_volunteers, :color,
                                          :sponsorship_levels_attributes, :sponsors_attributes,
                                          :targets, :targets_attributes,
-                                         :campaigns, :campaigns_attributes, :registration_limit, :require_itinerary, :code_ids)
+                                         :campaigns, :campaigns_attributes, :registration_limit, :require_itinerary,
+                                         :code_ids, :default_currency, :braintree_merchant_account)
     end
 
     def delete_event_schedules

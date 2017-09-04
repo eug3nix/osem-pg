@@ -25,11 +25,32 @@ body {
   .container {
     padding: 5px;
   }
+  padding-top: 20px;
+}
+
+#footer .policy {
+  margin-top: 20px;
+  margin-right: 20px; 
+  margin-bottom: 30px;
+  transition: all 0.2s linear 0s;
+}
+
+#footer .policy a.policy {
+    border-bottom: 3px solid transparent;
+    text-shadow: 1px 1px 3px #000;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
 }
 
 // different color for the splashpage footer
 .splash-footer {
   // position: absolute;
+  background-color: #2F2F2F;
+}
+
+.navbar-static-bottom {
   background-color: #2F2F2F;
 }
 
@@ -213,6 +234,10 @@ p.comment-body {
   padding-bottom: 20px;
 }
 
+.panel.panel-default.policyblock {
+  text-align: left;
+}
+
 #proposal-info div dt, #proposal-info div dd {
   display: inline-block;
   text-align: left;
@@ -221,7 +246,6 @@ p.comment-body {
 #proposal-info dt, #proposal-info dd {
   text-align: left;
 }
-
 
 .changeset{
   display: none;

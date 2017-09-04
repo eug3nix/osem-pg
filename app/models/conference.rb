@@ -12,6 +12,7 @@ class Conference < ActiveRecord::Base
   has_paper_trail ignore: [:updated_at, :guid, :revision, :events_per_week], meta: { conference_id: :id }
 
   has_and_belongs_to_many :questions
+  has_and_belongs_to_many :policies
   has_and_belongs_to_many :codes, :join_table => :conferences_codes
 
   has_one :splashpage, dependent: :destroy
@@ -45,6 +46,7 @@ class Conference < ActiveRecord::Base
   accepts_nested_attributes_for :sponsors, allow_destroy: true
   accepts_nested_attributes_for :email_settings
   accepts_nested_attributes_for :questions, allow_destroy: true
+  accepts_nested_attributes_for :policies, allow_destroy: true
   accepts_nested_attributes_for :codes, allow_destroy: true
   accepts_nested_attributes_for :vdays, allow_destroy: true
   accepts_nested_attributes_for :vpositions, allow_destroy: true
@@ -59,7 +61,8 @@ class Conference < ActiveRecord::Base
                         :start_date,
                         :end_date,
                         :start_hour,
-                        :end_hour
+                        :end_hour,
+                        :default_currency
 
   validates_uniqueness_of :short_title
   validates_format_of :short_title, with: /\A[a-zA-Z0-9_-]*\z/
@@ -658,6 +661,14 @@ class Conference < ActiveRecord::Base
   def get_valid_code(applied_code)
     code = codes.where(name: applied_code).first
     code
+  end
+
+  def available_currency_codes
+    currencies = []
+    Money::Currency.table.values.each do |currency|
+      currencies = currencies + [[currency[:name] + ' (' + currency[:iso_code] + ')', currency[:iso_code]]]
+    end
+    currencies
   end
 
   private

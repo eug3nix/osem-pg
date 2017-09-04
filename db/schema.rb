@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170703121241) do
+ActiveRecord::Schema.define(version: 20170820181840) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -127,29 +127,31 @@ ActiveRecord::Schema.define(version: 20170703121241) do
   end
 
   create_table "conferences", force: :cascade do |t|
-    t.string   "guid",                                 null: false
-    t.string   "title",                                null: false
-    t.string   "short_title",                          null: false
-    t.string   "timezone",                             null: false
-    t.date     "start_date",                           null: false
-    t.date     "end_date",                             null: false
+    t.string   "guid",                                       null: false
+    t.string   "title",                                      null: false
+    t.string   "short_title",                                null: false
+    t.string   "timezone",                                   null: false
+    t.date     "start_date",                                 null: false
+    t.date     "end_date",                                   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "logo_file_name"
     t.integer  "revision"
-    t.boolean  "use_vpositions",       default: false
-    t.boolean  "use_vdays",            default: false
+    t.boolean  "use_vpositions",             default: false
+    t.boolean  "use_vdays",                  default: false
     t.boolean  "use_volunteers"
     t.string   "color"
     t.text     "events_per_week"
     t.text     "description"
-    t.integer  "registration_limit",   default: 0
+    t.integer  "registration_limit",         default: 0
     t.string   "picture"
-    t.integer  "start_hour",           default: 9
-    t.integer  "end_hour",             default: 20
+    t.integer  "start_hour",                 default: 9
+    t.integer  "end_hour",                   default: 20
     t.string   "background_file_name"
     t.boolean  "require_itinerary"
-    t.boolean  "use_pg_flow",          default: true
+    t.boolean  "use_pg_flow",                default: true
+    t.string   "default_currency",           default: "USD"
+    t.string   "braintree_merchant_account"
   end
 
   create_table "conferences_codes", id: false, force: :cascade do |t|
@@ -158,6 +160,13 @@ ActiveRecord::Schema.define(version: 20170703121241) do
   end
 
   add_index "conferences_codes", ["conference_id", "code_id"], name: "index_conferences_codes_on_conference_id_and_code_id", unique: true, using: :btree
+
+  create_table "conferences_policies", id: false, force: :cascade do |t|
+    t.integer "conference_id"
+    t.integer "policy_id"
+  end
+
+  add_index "conferences_policies", ["conference_id", "policy_id"], name: "index_conferences_policies_on_conference_id_and_policy_id", unique: true, using: :btree
 
   create_table "conferences_questions", id: false, force: :cascade do |t|
     t.integer "conference_id"
@@ -379,6 +388,15 @@ ActiveRecord::Schema.define(version: 20170703121241) do
     t.datetime "updated_at",                     null: false
   end
 
+  create_table "policies", force: :cascade do |t|
+    t.string   "title"
+    t.integer  "conference_id"
+    t.boolean  "global"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "programs", force: :cascade do |t|
     t.integer  "conference_id"
     t.integer  "rating",               default: 0
@@ -558,6 +576,13 @@ ActiveRecord::Schema.define(version: 20170703121241) do
   add_index "ticket_purchases", ["conference_id", "code_id"], name: "index_ticket_purchases_on_conference_id_and_code_id", using: :btree
   add_index "ticket_purchases", ["event_id"], name: "index_ticket_purchases_on_event_id", using: :btree
 
+  create_table "ticket_purchases_attendees", force: :cascade do |t|
+    t.integer "ticket_purchase_id"
+    t.integer "attendee_id"
+  end
+
+  add_index "ticket_purchases_attendees", ["ticket_purchase_id", "attendee_id"], name: "ticket_purchases_attendees_idx", using: :btree
+
   create_table "tickets", force: :cascade do |t|
     t.integer "conference_id"
     t.string  "title",                          null: false
@@ -722,8 +747,13 @@ ActiveRecord::Schema.define(version: 20170703121241) do
   add_foreign_key "codes_tickets", "tickets"
   add_foreign_key "conferences_codes", "codes"
   add_foreign_key "conferences_codes", "conferences"
+  add_foreign_key "conferences_policies", "conferences"
+  add_foreign_key "conferences_policies", "policies"
   add_foreign_key "events", "tickets"
+  add_foreign_key "policies", "conferences"
   add_foreign_key "sponsorship_infos", "conferences"
   add_foreign_key "ticket_purchases", "codes"
   add_foreign_key "ticket_purchases", "events"
+  add_foreign_key "ticket_purchases_attendees", "ticket_purchases"
+  add_foreign_key "ticket_purchases_attendees", "users", column: "attendee_id"
 end

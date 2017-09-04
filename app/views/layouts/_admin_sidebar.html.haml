@@ -50,6 +50,9 @@
         - if can? :update, @conference
           %li{:class=> active_nav_li(admin_conference_sponsorship_info_path(@conference.short_title))}
             = link_to 'Sponsors Information', admin_conference_sponsorship_info_path(@conference.short_title)
+        - if can? :update, Policy.new(conference_id: @conference.id)
+          %li{ class: active_nav_li(admin_conference_policies_path(@conference.short_title)) }
+            = link_to 'Policies', admin_conference_policies_path(@conference.short_title)
   - if can? :show, Venue.new(conference_id: @conference.id)
     %li{:class=> "#{active_nav_li(admin_conference_venue_path(@conference.short_title))}"}
       = link_to(admin_conference_venue_path(@conference.short_title)) do
@@ -146,3 +149,21 @@
       = link_to(admin_conference_roles_path(@conference.short_title)) do
         %span.fa.fa-group
         Roles
+
+  %hr
+  %li
+    %a
+      %span.fa.fa-globe
+      Globals
+    %ul
+      - if can? :index, User
+        %li
+          = link_to(admin_users_path) do
+            %span.fa.fa-user
+            Users
+      - if can? :index, PaperTrail::Version.new(item_type: 'User')
+        %li
+          = link_to(admin_revision_history_path) do
+            %span.fa.fa-history
+            Revision History
+
